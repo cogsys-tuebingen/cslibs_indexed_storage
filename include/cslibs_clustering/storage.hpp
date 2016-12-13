@@ -48,6 +48,12 @@ public:
         return backend_.traverse(function);
     }
 
+    template<typename tag, typename... Args>
+    inline void set(tag, Args&&... args)
+    {
+        return backend_.set(tag{}, std::forward<Args>(args)...);
+    };
+
 private:
     backend_t backend_;
 };

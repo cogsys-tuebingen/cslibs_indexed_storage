@@ -49,6 +49,11 @@ private:
     static constexpr auto invalid_index_value = std::numeric_limits<internal_index_t>::max();
 
 public:
+    ~Array()
+    {
+        delete[] storage_;
+    }
+
     template<typename... Args>
     inline data_t& insert(const index_t& index, Args&&... args)
     {
@@ -105,15 +110,62 @@ public:
         }
     }
 
-private:
-    internal_index_t to_internal_index(const index_t& index) const
+    template<typename... Args>
+    void set(options::tags::array_size, Args&&... new_size)
     {
-        return (index[0] - -5) * 10 + (index[1] - -5);
+        if (valid_.any())
+            throw std::runtime_error("Resize not allowed with active data");
+
+        size_ = {std::forward<Args>(new_size)...};
+        resize();
     }
 
-    index_t to_external_index(const internal_index_t& internal_index) const
+    template<typename... Args>
+    void set(options::tags::array_offset, Args&&... new_offset)
     {
-        return {internal_index / 10 - 5, internal_index % 10 - 5};
+        if (valid_.any())
+            throw std::runtime_error("Offset change not allowed with active data");
+
+        offset_ = {std::forward<Args>(new_offset)...};
+    }
+
+private:
+    void resize()
+    {
+        std::size_t size = 1;
+        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
+            size *= size_[i];
+
+        delete[] storage_;
+        storage_ = new data_t[size];
+
+        valid_.clear();
+        valid_.resize(size);
+    }
+
+    internal_index_t to_internal_index(const index_t& index) const
+    {
+        internal_index_t internal_index{};
+        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
+        {
+            const auto value = index[i] - offset_[i];
+            if (value < 0 || value > size_[i])
+                return invalid_index_value;
+
+            internal_index = internal_index * size_[i] + value;
+        }
+        return internal_index;
+    }
+
+    index_t to_external_index(internal_index_t internal_index) const
+    {
+        index_t index;
+        for (std::size_t i = 0;i < index_wrapper_t::dimensions; ++i)
+        {
+            index[i] = internal_index % size_[i] + offset_[i];
+            internal_index = internal_index / size_[i];
+        }
+        return index;
     }
 
     static constexpr std::size_t to_flat_size(/*const array_size_t& array_size*/)
