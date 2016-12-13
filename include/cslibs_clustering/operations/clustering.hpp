@@ -23,7 +23,7 @@ public:
     {
         storage_.traverse([&](const index_t& index, data_t& data)
                           {
-                              if (!clusters_op.start(data))
+                              if (!clusters_op.start(index, data))
                                   return;
 
                               cluster(clusters_op, index);
@@ -34,14 +34,15 @@ private:
     template<typename cluster_op_t>
     void cluster(cluster_op_t& cluster_op, const index_t& center)
     {
-        cluster_op.visit_neighbours([this, &center, &cluster_op](const index_t& offset)
+        cluster_op.visit_neighbours(center,
+                                    [this, &center, &cluster_op](const index_t& offset)
                                     {
                                         auto index = index_wrapper_t::add(center, offset);
                                         auto neighbour = storage_.get(index);
                                         if (!neighbour)
                                             return;
 
-                                        if (!cluster_op.extend(*neighbour))
+                                        if (!cluster_op.extend(center, index, *neighbour))
                                             return;
 
                                         cluster(cluster_op, index);

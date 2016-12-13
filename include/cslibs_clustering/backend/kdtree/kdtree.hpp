@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/backend/options.hpp>
-#include <cslibs_clustering/backend/kdtree_options.hpp>
+#include <cslibs_clustering/backend/kdtree/kdtree_options.hpp>
 #include <cslibs_clustering/backend/data_ops.hpp>
 #include <limits>
 

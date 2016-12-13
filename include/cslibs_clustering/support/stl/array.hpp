@@ -20,7 +20,11 @@ struct index_wrapper<std::array<T, N>>
         static_assert(I < dimensions, "Out of bounds index access");
 
         using value_type = T;
-        inline static constexpr value_type access(const type& index)
+        inline static constexpr value_type& access(type& index)
+        {
+            return index[I];
+        }
+        inline static constexpr const value_type& access(const type& index)
         {
             return index[I];
         }

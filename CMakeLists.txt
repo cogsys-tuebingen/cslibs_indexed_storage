@@ -24,7 +24,12 @@ if (${catkin_FOUND})
     )
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+find_package(Boost REQUIRED)
+
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${Boost_INCLUDR_DIRS}
+)
 
 file(GLOB_RECURSE include_files include/${PROJECT_NAME}/*)
 add_custom_target(show_${PROJECT_NAME}_headers_in_qt SOURCES
