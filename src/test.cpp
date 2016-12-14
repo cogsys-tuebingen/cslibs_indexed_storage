@@ -86,8 +86,8 @@ int main(int argc, char* argv[])
     >;
 
     Storage storage;
-    storage.set(cc::backend::options::tags::array_size{}, 10, 10);
-    storage.set(cc::backend::options::tags::array_offset{}, -5, -5);
+    storage.set<cc::backend::options::tags::array_size>(10ul, 10ul);
+    storage.set<cc::backend::options::tags::array_offset>(-5, -5);
 
     {
         std::array<std::pair<int, int>, 4> offsets =

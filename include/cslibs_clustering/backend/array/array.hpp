@@ -5,6 +5,7 @@
 #include <cslibs_clustering/backend/data_ops.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
+#include <memory>
 
 namespace cslibs_clustering
 {
@@ -43,6 +44,12 @@ public:
             options::array_offset<index_t>,
             options_ts_...>;
     static constexpr auto static_array_offset = array_offset_opt::type::value;
+
+    using array_dynamic_only_opt = helper::get_option_t<
+            options::tags::array_dynamic_only,
+            options::array_dynamic_only<>,
+            options_ts_...>;
+    static constexpr auto array_dynamic_only = array_dynamic_only_opt::value;
 
 private:
     using internal_index_t = std::size_t;
@@ -132,9 +139,7 @@ public:
 private:
     void resize()
     {
-        std::size_t size = 1;
-        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
-            size *= size_[i];
+        const std::size_t size = get_internal_size();
 
         delete[] storage_;
         storage_ = new data_t[size];
@@ -149,7 +154,7 @@ private:
         for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
         {
             const auto value = index[i] - offset_[i];
-            if (value < 0 || value > size_[i])
+            if (value < 0 || size_[i] - value <= 0)
                 return invalid_index_value;
 
             internal_index = internal_index * size_[i] + value;
@@ -168,17 +173,26 @@ private:
         return index;
     }
 
-    static constexpr std::size_t to_flat_size(/*const array_size_t& array_size*/)
+    constexpr std::size_t get_internal_size()
     {
-        return 10 * 10;
+        std::size_t size = 1;
+        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
+            size *= size_[i];
+
+        return size;
     }
 
 private:
+//    array_size_t size_ = (array_dynamic_only ? array_size_t{} : static_array_size);
+//    array_offset_t offset_ = (array_dynamic_only ? array_offset_t{} : static_array_offset);
+//
+//    data_t* storage_ = (array_dynamic_only ? nullptr : new data_t[get_internal_size()]);
+//    boost::dynamic_bitset<uint64_t> valid_{array_dynamic_only ? 0 : get_internal_size()};
     array_size_t size_ = static_array_size;
     array_offset_t offset_ = static_array_offset;
 
-    data_t* storage_ = new data_t[to_flat_size(/*static_array_size*/)];
-    boost::dynamic_bitset<uint64_t> valid_{to_flat_size(/*static_array_size*/)};
+    data_t* storage_ = new data_t[get_internal_size()];
+    boost::dynamic_bitset<uint64_t> valid_{get_internal_size()};
 };
 
 }

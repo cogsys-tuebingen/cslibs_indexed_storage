@@ -9,6 +9,7 @@ namespace tags
 {
 struct array_size {};
 struct array_offset {};
+struct array_dynamic_only{};
 }
 
 template<std::size_t... sizes>
@@ -33,6 +34,13 @@ struct array_offset
         static constexpr std::array<index_value_t, sizeof...(values_)> value = {values_...};
     };
     using type = ValueHolder;
+};
+
+template<bool dynamic_only = true>
+struct array_dynamic_only
+{
+    using tag = tags::array_offset;
+    using type = std::integral_constant<bool, dynamic_only>;
 };
 
 }

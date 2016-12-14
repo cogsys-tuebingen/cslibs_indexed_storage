@@ -49,6 +49,12 @@ public:
     }
 
     template<typename tag, typename... Args>
+    inline void set(Args&&... args)
+    {
+        return set(tag{}, std::forward<Args>(args)...);
+    };
+
+    template<typename tag, typename... Args>
     inline void set(tag, Args&&... args)
     {
         return backend_.set(tag{}, std::forward<Args>(args)...);

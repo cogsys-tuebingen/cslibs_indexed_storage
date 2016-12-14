@@ -41,6 +41,9 @@ add_executable(${PROJECT_NAME}_test
     ${include_files}
 )
 
+set(${PROJECT_NAME}_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/")
+
+add_subdirectory(example)
 
 if (${catkin_FOUND})
     install(DIRECTORY include/${PROJECT_NAME}/
