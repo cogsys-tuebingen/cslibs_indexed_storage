@@ -4,10 +4,9 @@ project(cslibs_clustering)
 include(cmake/ForceCpp11.cmake)
 include(cmake/EnableWarnings.cmake)
 
-# Boost required for boost::dynamic_bitset only :/
-find_package(Boost REQUIRED)
-# for tests
-find_package(GTest)
+find_package(Boost REQUIRED)  # Boost required (header only)
+find_package(GTest)           # for tests
+find_package(Doxygen)         # for documentation
 
 # Catkin is optional
 find_package(catkin QUIET)
@@ -32,6 +31,9 @@ set(${PROJECT_NAME}_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 file(GLOB_RECURSE include_files include/${PROJECT_NAME}/*)
 add_custom_target(show_${PROJECT_NAME}_headers_in_qt SOURCES ${include_files})
 
+if (${DOXYGEN_FOUND})
+  add_subdirectory(doc)
+endif()
 
 add_subdirectory(example)
 if (${GTEST_FOUND})

@@ -5,6 +5,16 @@
 namespace cslibs_clustering
 {
 
+/**
+ * Generic wrapper type to abstract away the actual storage implementation.
+ *
+ * The complete access should be mananged through this class.
+ *
+ * @tparam data_t_ actual data that is stored
+ * @tparam index_t_ index for addressing
+ * @tparam backend_t_ used backend implemenation
+ * @tparam args_t_ [optional] configuration arguments for the backend
+ */
 template<typename data_t_, typename index_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
 class Storage
 {
