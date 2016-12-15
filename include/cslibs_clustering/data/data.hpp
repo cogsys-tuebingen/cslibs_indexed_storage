@@ -19,8 +19,8 @@ struct data_ops
     static inline constexpr void merge(data_t& self, Args&&... args)
     {
         return strategy == backend::options::OnDuplicateIndex::REPLACE ?
-               (self = create(std::forward<Args>(args)...), (void) 0) :
-               self.merge(std::forward<Args>(args)...);
+               (self.~data_t(), new (&self) data_t(create(std::forward<Args>(args)...)), (void) 0) :    //! \todo placement new should only be used if not move assignable
+               (self.merge(std::forward<Args>(args)...), (void) 0);
     }
 };
 

@@ -9,8 +9,8 @@ using namespace cslibs_clustering::backend::simple;
 
 struct Data
 {
-    float x;
-    float y;
+    const float x;
+    const float y;
 
     inline void merge(const Data& other)
     {
