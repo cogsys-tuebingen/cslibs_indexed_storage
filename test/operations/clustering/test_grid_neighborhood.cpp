@@ -1,23 +1,5 @@
 #include <cslibs_clustering/operations/clustering/grid_neighborhood.hpp>
-#include <gtest/gtest.h>
-
-#define STATIC_ASSERT_EQ_TYPE(T1, T2) \
-    ::testing::StaticAssertTypeEq<T1, T2>()
-
-/*
-#define STATIC_ASSERT_EQ_VALUE(V1, V2) \
-    ::testing::StaticAssertTypeEq< \
-        std::integral_constant<typename std::common_type<decltype(V1), decltype(V2)>::type, V1>, \
-        std::integral_constant<typename std::common_type<decltype(V1), decltype(V2)>::type, V2> \
-    >()
-*/
-
-// needed to prevent odr-usage of values in gtest
-#define STATIC_ASSERT_EQ_VALUE(V1, V2) \
-    ASSERT_EQ( \
-        (std::integral_constant<typename std::common_type<decltype(V1), decltype(V2)>::type, V1>::value), \
-        (std::integral_constant<typename std::common_type<decltype(V1), decltype(V2)>::type, V2>::value) \
-    )
+#include <cslibs_clustering_test/testing.hpp>
 
 namespace cc = cslibs_clustering::operations::clustering;
 
