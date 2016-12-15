@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cslibs_clustering/helper/index_sequence.hpp>
 #include <boost/integer.hpp>
 #include <array>
 #include <valarray>
@@ -14,16 +15,12 @@ namespace clustering
 namespace detail
 {
 
-template<class T, T... Ints> struct integer_sequence {};
-template<std::size_t... Ints> using index_sequence = integer_sequence<std::size_t, Ints...>;
-template <std::size_t N, std::size_t... Is> struct make_index_sequence : make_index_sequence<N - 1, N - 1, Is...> {};
-template <std::size_t... Is> struct make_index_sequence<0u, Is...> : index_sequence<Is...> { using type = index_sequence<Is...>; };
 template <typename Seq1, std::size_t Offset, typename Seq2> struct concat_seq;
 
 template <std::size_t ... Is1, std::size_t Offset, std::size_t ... Is2>
-struct concat_seq<index_sequence<Is1...>, Offset, index_sequence<Is2...>>
+struct concat_seq<helper::index_sequence<Is1...>, Offset, helper::index_sequence<Is2...>>
 {
-    using type = index_sequence<Is1..., (Offset + Is2)...>;
+    using type = helper::index_sequence<Is1..., (Offset + Is2)...>;
 };
 
 template<typename T>
@@ -39,7 +36,7 @@ constexpr T get_bit(std::size_t base, std::size_t bit, std::size_t value)
 }
 
 template<typename offset_t, std::size_t... breaks>
-constexpr offset_t generate_offset(std::size_t base, std::size_t counter, index_sequence<breaks...>)
+constexpr offset_t generate_offset(std::size_t base, std::size_t counter, helper::index_sequence<breaks...>)
 {
     using value_type = typename offset_t::value_type;
     return {value_type(get_bit<value_type>(base, breaks, counter) - base / 2)...};
@@ -48,11 +45,11 @@ constexpr offset_t generate_offset(std::size_t base, std::size_t counter, index_
 template<typename offset_t>
 constexpr offset_t generate_offset(std::size_t base, std::size_t counter)
 {
-    return generate_offset<offset_t>(base, counter, make_index_sequence<std::tuple_size<offset_t>::value>{});
+    return generate_offset<offset_t>(base, counter, helper::make_index_sequence<std::tuple_size<offset_t>::value>{});
 }
 
 template<typename list_t, std::size_t... counter>
-constexpr list_t generate_all(std::size_t base, index_sequence<counter...>)
+constexpr list_t generate_all(std::size_t base, helper::index_sequence<counter...>)
 {
     return {generate_offset<typename list_t::value_type>(base, counter)...};
 };
@@ -63,15 +60,15 @@ constexpr list_t generate(std::size_t base, bool skip_self)
     return skip_self ?
            generate_all<list_t>(base,
                                 typename concat_seq<
-                                        typename make_index_sequence<skip>::type,
+                                        typename helper::make_index_sequence<skip>::type,
                                         skip + 1,
-                                        typename make_index_sequence<std::tuple_size<list_t>::value - skip>::type
+                                        typename helper::make_index_sequence<std::tuple_size<list_t>::value - skip>::type
                                 >::type{}) :
-           generate_all<list_t>(base, make_index_sequence<std::tuple_size<list_t>::value>{});
+           generate_all<list_t>(base, helper::make_index_sequence<std::tuple_size<list_t>::value>{});
 }
 
 //! \todo can be increased when unsing a log2 approach in make_index_sequence
-constexpr std::size_t MAX_STATIC_SIZE = pow(5ul, 4);
+constexpr std::size_t MAX_STATIC_SIZE = pow(9ul, 5);
 
 }
 
