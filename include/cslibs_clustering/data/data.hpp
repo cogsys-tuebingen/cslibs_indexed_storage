@@ -5,13 +5,9 @@
 
 namespace cslibs_clustering
 {
-namespace backend
-{
-namespace ops
-{
 
 template<typename data_t>
-struct DataOps
+struct data_ops
 {
     template<typename... Args>
     static inline constexpr data_t create(Args&&... args)
@@ -19,15 +15,13 @@ struct DataOps
         return {std::forward<Args>(args)...};
     }
 
-    template<options::OnDuplicateIndex strategy, typename... Args>
+    template<backend::options::OnDuplicateIndex strategy, typename... Args>
     static inline constexpr void merge(data_t& self, Args&&... args)
     {
-        return strategy == options::OnDuplicateIndex::REPLACE ?
+        return strategy == backend::options::OnDuplicateIndex::REPLACE ?
                (self = create(std::forward<Args>(args)...), (void) 0) :
                self.merge(std::forward<Args>(args)...);
     }
 };
 
-}
-}
 }

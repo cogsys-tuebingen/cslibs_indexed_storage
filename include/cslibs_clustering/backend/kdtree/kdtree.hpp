@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree_options.hpp>
-#include <cslibs_clustering/backend/data_ops.hpp>
+#include <cslibs_clustering/data/data.hpp>
 #include <limits>
 
 namespace cslibs_clustering
@@ -17,7 +17,6 @@ class KDTree
 {
 public:
     using data_t = data_t_;
-    using data_ops = ops::DataOps<data_t>;
 
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
@@ -113,7 +112,7 @@ public:
             if (current->index != index)
                 current = current->split(new Node(), new Node(), index);
 
-            data_ops::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
+            data_ops<data_t>::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
 
             return current->data;
         }

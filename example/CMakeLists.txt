@@ -1,16 +1,12 @@
-add_executable(example_benchmark
-  benchmark/benchmark.cpp
-  benchmark/testdata.hpp
-  benchmark/timing.hpp
-)
-target_include_directories(example_benchmark
-  PUBLIC ${cslibs_clustering_INCLUDE_DIR}
-)
-target_compile_options(example_benchmark
-  PUBLIC -march=native)
+macro(add_example name)
+  add_executable(${name} ${ARGN})
+  target_include_directories(${name}
+    PUBLIC
+    ${cslibs_clustering_INCLUDR_DIR}
+    ${Boost_INCLUDR_DIRS}
+    )
+endmacro()
 
-
-add_executable(${PROJECT_NAME}_test
-  test.cpp
-  ${include_files}
-  )
+add_example(example_benchmark benchmark/benchmark.cpp benchmark/testdata.hpp benchmark/timing.hpp)
+add_example(example_auto_index auto_index.cpp)
+add_example(example_test test.cpp)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/helper/static_warning.hpp>
-#include <cslibs_clustering/backend/data_ops.hpp>
+#include <cslibs_clustering/data/data.hpp>
 #include <cstdint>
 #include <unordered_map>
 #include <type_traits>
@@ -68,8 +68,7 @@ class NestedComponentMapStorage<data_t_, index_wrapper_t_, last_index, last_inde
 {
 public:
     using data_t = data_t_;
-    using data_ops = ops::DataOps<data_t>;
-    
+
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
     using index_accessor_t = typename index_wrapper_t::template get<last_index>;
@@ -85,13 +84,13 @@ public:
         auto itr = storage_.find(index_value);
         if (itr == storage_.end())
         {
-            auto result = storage_.emplace(index_value, data_ops::create(std::forward<Args>(args)...));
+            auto result = storage_.emplace(index_value, data_ops<data_t>::create(std::forward<Args>(args)...));
             return result.first->second;
         }
         else
         {
             auto& value = itr->second;
-            data_ops::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
+            data_ops<data_t>::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
             return value;
         }
     }

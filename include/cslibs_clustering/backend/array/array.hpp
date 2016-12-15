@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/array/array_options.hpp>
-#include <cslibs_clustering/backend/data_ops.hpp>
+#include <cslibs_clustering/data/data.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
@@ -19,7 +19,6 @@ class Array
 {
 public:
     using data_t = data_t_;
-    using data_ops = ops::DataOps<data_t>;
 
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
@@ -71,13 +70,13 @@ public:
         if (!valid_.test_set(internal_index))
         {
             auto& value = storage_[internal_index];
-            value = data_ops::create(std::forward<Args>(args)...);
+            value = data_ops<data_t>::create(std::forward<Args>(args)...);
             return value;
         }
         else
         {
             auto& value = storage_[internal_index];
-            data_ops::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
+            data_ops<data_t>::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
             return value;
         }
     }
