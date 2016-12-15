@@ -1,7 +1,6 @@
 #pragma once
 
-#include "cslibs_clustering/support/index_fwd.hpp"
-#include <boost/optional.hpp>
+#include <cslibs_clustering/index/index.hpp>
 
 namespace cslibs_clustering
 {

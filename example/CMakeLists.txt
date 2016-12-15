@@ -8,3 +8,9 @@ target_include_directories(example_benchmark
 )
 target_compile_options(example_benchmark
   PUBLIC -march=native)
+
+
+add_executable(${PROJECT_NAME}_test
+  test.cpp
+  ${include_files}
+  )

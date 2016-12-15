@@ -43,7 +43,7 @@ Points getTestdata(const std::string& file)
     static const auto IN_DATASET = 1000;
     static const auto OFFSETS = 3 * 3;
     static const auto LOAD_PCT = 0.66;
-    static const std::size_t LOAD_FACTOR = (VGA / IN_DATASET / OFFSETS) * LOAD_PCT;
+    static const int LOAD_FACTOR = (VGA / IN_DATASET / OFFSETS) * LOAD_PCT;
     Points samples;
     std::ifstream in(file);
     std::string line;

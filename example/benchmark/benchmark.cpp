@@ -5,7 +5,7 @@
 #include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
 #include <cslibs_clustering/backend/simple/nested_component_map.hpp>
-#include <cslibs_clustering/support/stl.hpp>
+#include <cslibs_clustering/index/index_std.hpp>
 namespace cc = cslibs_clustering;
 
 namespace tests

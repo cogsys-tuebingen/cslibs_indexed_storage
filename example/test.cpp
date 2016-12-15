@@ -2,7 +2,7 @@
 #include <cslibs_clustering/backend/simple/nested_component_map.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
-#include <cslibs_clustering/support/stl.hpp>
+#include <cslibs_clustering/index/index_std.hpp>
 #include <cslibs_clustering/operations/clustering.hpp>
 
 #include <iostream>
@@ -17,7 +17,7 @@ struct DataType
     float y;
     bool seen;
 
-    void merge(const DataType& data) {
+    void merge(const DataType& /*data*/) {
         std::cout << "merge" << std::endl;
     }
 };
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
                 d.y = distribution(gen) + std::get<1>(offset);
                 d.seen = false;
 
-                storage.insert({d.x, d.y}, std::move(d));
+                storage.insert({int(d.x), int(d.y)}, std::move(d));
             }
     }
 
