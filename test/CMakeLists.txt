@@ -6,3 +6,4 @@ macro(create_test name)
 endmacro()
 
 create_test(support_stl_array support/test_support_stl_array.cpp)
+create_test(operations_clustering_grid_neighboorhood operations/clustering/test_grid_neighborhood.cpp)

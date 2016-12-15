@@ -44,18 +44,15 @@ struct ClusterOp
         return true;
     }
 
+    using neighborhood_t = cc::operations::clustering::GridNeighborhoodStatic<std::tuple_size<IndexType>::value, 3>;
+    using visitor_index_t = neighborhood_t::offset_t;
+
     template<typename visitor_t>
     void visit_neighbours(const IndexType& center, const visitor_t& visitior)
     {
-        static constexpr std::array<std::array<int, 2>, 8> offsets =
-                {{
-                         {-1, -1}, {-1, 0}, {-1, 1},
-                         {0, -1}, {0, 1},
-                         {1, -1}, {1, 0}, {1, 1},
-                 }};
+        static constexpr auto neighborhood = neighborhood_t{};
         std::cout << "Visit: " << center[0] << ", " << center[1] << std::endl;
-        for (const auto& offset : offsets)
-            visitior(offset);
+        neighborhood.visit(visitior);
     }
 };
 
@@ -110,7 +107,7 @@ int main(int argc, char* argv[])
             }
     }
 
-    cc::operations::Clustering<Storage> clustering(storage);
+    cc::operations::clustering::Clustering<Storage> clustering(storage);
     ClusterOp op;
     clustering.cluster(op);
 }
