@@ -1,5 +1,5 @@
 #include <cslibs_clustering/storage.hpp>
-#include <cslibs_clustering/backend/simple/nested_component_map.hpp>
+#include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
 #include <cslibs_clustering/index/index_std.hpp>
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 //                cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
 //    >;
 //    cc::Storage<DataType, IndexType,
-//                cc::backend::simple::NestedComponentMap,
+//                cc::backend::simple::UnorderedComponentMap,
 //                cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
 //    >;
     cc::Storage<DataType, IndexType,

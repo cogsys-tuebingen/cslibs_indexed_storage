@@ -1,5 +1,5 @@
 #include <cslibs_clustering/storage/auto_index_storage.hpp>
-#include <cslibs_clustering/backend/simple/nested_component_map.hpp>
+#include <cslibs_clustering/backend/simple/map.hpp>
 #include <cslibs_clustering/index/index_std.hpp>
 
 #include <iostream>
@@ -35,7 +35,7 @@ struct auto_index<Data>
 
 int main()
 {
-    using Storage = AutoIndexStorage<Data, NestedComponentMap, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
+    using Storage = AutoIndexStorage<Data, Map, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
     Storage storage;
 
     storage.insert({ 3.4, 5 });

@@ -15,7 +15,7 @@ namespace simple
 namespace detail
 {
 template<typename data_t_, typename index_wrapper_t_, std::size_t own_index, std::size_t last_index, options::OnDuplicateIndex on_duplicate_index_strategy>
-class NestedComponentMapStorage
+class UnorderedComponentMapStorage
 {
 public:
     using data_t = data_t_;
@@ -24,7 +24,7 @@ public:
     using index_accessor_t = typename index_wrapper_t::template get<own_index>;
     using index_element_t = typename index_accessor_t::value_type;
 private:
-    using lookup_map_t = std::unordered_map<index_element_t, NestedComponentMapStorage<data_t, index_wrapper_t, own_index + 1, last_index, on_duplicate_index_strategy>>;
+    using lookup_map_t = std::unordered_map<index_element_t, UnorderedComponentMapStorage<data_t, index_wrapper_t, own_index + 1, last_index, on_duplicate_index_strategy>>;
 
 public:
     template<typename... Args>
@@ -59,12 +59,22 @@ public:
         }
     }
 
+    template<typename Fn>
+    inline void traverse(index_t& index, const Fn& function) const
+    {
+        for (auto&& entry : lookup_)
+        {
+            index_accessor_t::access(index) = entry.first;
+            entry.second.traverse(index, function);
+        }
+    }
+
 private:
     lookup_map_t lookup_;
 };
 
 template<typename data_t_, typename index_wrapper_t_, std::size_t last_index, options::OnDuplicateIndex on_duplicate_index_strategy>
-class NestedComponentMapStorage<data_t_, index_wrapper_t_, last_index, last_index, on_duplicate_index_strategy>
+class UnorderedComponentMapStorage<data_t_, index_wrapper_t_, last_index, last_index, on_duplicate_index_strategy>
 {
 public:
     using data_t = data_t_;
@@ -121,6 +131,16 @@ public:
         }
     }
 
+    template<typename Fn>
+    inline void traverse(index_t& index, const Fn& function) const
+    {
+        for (auto&& entry : storage_)
+        {
+            index_accessor_t::access(index) = entry.first;
+            function(index, entry.second);
+        }
+    }
+
 private:
     lookup_map_t storage_;
 };
@@ -128,7 +148,7 @@ private:
 }
 
 template<typename data_t_, typename index_wrapper_t_, typename... options_ts_>
-class NestedComponentMap
+class UnorderedComponentMap
 {
 public:
     using data_t = data_t_;
@@ -143,7 +163,7 @@ public:
 
 private:
     static constexpr auto index_dimensions = index_wrapper_t::dimensions;
-    using storage_t = detail::NestedComponentMapStorage<data_t, index_wrapper_t, 0, index_dimensions - 1, on_duplicate_index_strategy>;
+    using storage_t = detail::UnorderedComponentMapStorage<data_t, index_wrapper_t, 0, index_dimensions - 1, on_duplicate_index_strategy>;
 
 public:
     template<typename... Args>
@@ -164,6 +184,13 @@ public:
 
     template<typename Fn>
     inline void traverse(const Fn& function)
+    {
+        index_t index{};
+        return storage_.traverse(index, function);
+    }
+
+    template<typename Fn>
+    inline void traverse(const Fn& function) const
     {
         index_t index{};
         return storage_.traverse(index, function);
