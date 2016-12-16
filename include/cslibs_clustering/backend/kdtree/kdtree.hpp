@@ -89,6 +89,11 @@ private:
     };
 
 public:
+    ~KDTree()
+    {
+        clear();
+    }
+
     template<typename... Args>
     inline data_t& insert(const index_t& index, Args&&... args)
     {
@@ -170,6 +175,15 @@ public:
             traverse(function, root_);
     }
 
+    inline void clear()
+    {
+        if (root_)
+        {
+            clear(root_);
+            delete root_;
+        }
+    }
+
 private:
     template<typename Fn>
     inline void traverse(const Fn& function, Node* node)
@@ -192,6 +206,17 @@ private:
         {
             traverse(function, node->left);
             traverse(function, node->right);
+        }
+    }
+
+    inline void clear(Node* node)
+    {
+        if (!node->is_leaf())
+        {
+            clear(node->left);
+            delete node->left;
+            clear(node->right);
+            delete node->right;
         }
     }
 
