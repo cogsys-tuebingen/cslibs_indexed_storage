@@ -48,7 +48,7 @@ public:
         auto itr = storage_.find(index);
         if (itr == storage_.end())
             return nullptr;
-        return itr.second;
+        return &(itr->second);
     }
 
     inline const data_t* get(const index_t& index) const
@@ -56,7 +56,7 @@ public:
         auto itr = storage_.find(index);
         if (itr == storage_.end())
             return nullptr;
-        return itr.second;
+        return &(itr->second);
     }
 
     template<typename Fn>
