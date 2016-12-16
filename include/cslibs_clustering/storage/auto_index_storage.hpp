@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cslibs_clustering/storage/generic_storage.hpp>
-#include <cslibs_clustering/data/data.hpp>
 
 namespace cslibs_clustering
 {
@@ -10,16 +9,18 @@ template<typename data_t>
 struct auto_index;
 
 
-template<typename data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
-class Storage<data_t_, auto_index<data_t_>, backend_t_, args_t_...>
+template<typename data_interface_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
+class Storage<data_interface_t_, auto_index<data_interface_t_>, backend_t_, args_t_...>
 {
 public:
-    using data_t = data_t_;
+    using data_if = interface::data_interface<data_interface_t_>;
+    using data_t = typename data_if::type;
 
     using auto_index_t = auto_index<data_t>;
     using index_if = interface::index_interface<typename auto_index_t::index_t>;
     using index_t = typename index_if::type;
-    using backend_t = backend_t_<data_t, index_if, args_t_...>;
+
+    using backend_t = backend_t_<data_if, index_if, args_t_...>;
 
 public:
     Storage() = default;
@@ -36,9 +37,9 @@ public:
     }
 
     template<typename... Args>
-    inline data_t_& insert(Args&& ... args)
+    inline data_interface_t_& insert(Args&& ... args)
     {
-        return insert(data_ops<data_t>::create(std::forward<Args>(args)...));
+        return insert(data_if::create(std::forward<Args>(args)...));
     }
 
     inline data_t& insert(data_t data)

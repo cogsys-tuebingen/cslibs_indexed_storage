@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cslibs_clustering/data/data.hpp>
+#include <cslibs_clustering/interface/data/data.hpp>
 #include <cstdint>
 #include <type_traits>
 
@@ -11,11 +11,12 @@ namespace backend
 namespace simple
 {
 
-template<typename map_t, typename data_t_, typename index_if_, typename... options_ts_>
+template<typename map_t, typename data_interface_t_, typename index_if_, typename... options_ts_>
 class MapGeneric
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
     using index_if = index_if_;
     using index_t = typename index_if::type;
 
@@ -28,13 +29,13 @@ public:
         auto itr = storage_.find(index);
         if (itr == storage_.end())
         {
-            auto result = storage_.emplace(index, data_ops<data_t>::create(std::forward<Args>(args)...));
+            auto result = storage_.emplace(index, data_if::create(std::forward<Args>(args)...));
             return result.first->second;
         }
         else
         {
             auto& value = itr->second;
-            data_ops<data_t>::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
+            data_if::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
             return value;
         }
     }

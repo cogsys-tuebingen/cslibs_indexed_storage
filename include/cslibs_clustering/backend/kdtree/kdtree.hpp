@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree_options.hpp>
-#include <cslibs_clustering/data/data.hpp>
+#include <cslibs_clustering/interface/data/data.hpp>
 #include <limits>
 
 namespace cslibs_clustering
@@ -12,11 +12,12 @@ namespace backend
 namespace kdtree
 {
 
-template<typename data_t_, typename index_interface_t_, typename... options_ts_>
+template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
 class KDTree
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
@@ -74,7 +75,7 @@ private:
         std::size_t split_dimension = {};
 
         index_t index;
-        data_t_ data;
+        data_t data;
     };
 
 public:
@@ -90,7 +91,7 @@ public:
         {
             root_ = new Node();
             root_->index = index;
-            data_ops<data_t>::template merge<option::MergeStrategy::REPLACE>(root_->data, std::forward<Args>(args)...);
+            data_if::template merge<option::MergeStrategy::REPLACE>(root_->data, std::forward<Args>(args)...);
             return root_->data;
         }
         else
@@ -107,7 +108,7 @@ public:
             if (current->index != index)
                 current = current->split(new Node(), new Node(), index);
 
-            data_ops<data_t>::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
+            data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
 
             return current->data;
         }

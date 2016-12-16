@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/array/array_options.hpp>
-#include <cslibs_clustering/data/data.hpp>
+#include <cslibs_clustering/interface/data/data.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
@@ -30,11 +30,12 @@ template<typename T, std::size_t count>
 using empty_array = typename empty_array_maker<T, typename helper::make_index_sequence<count>::type>::type;
 }
 
-template<typename data_t_, typename index_interface_t_, typename... options_ts_>
+template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
 class Array
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
@@ -66,13 +67,13 @@ public:
         if (!valid_.test_set(internal_index))
         {
             auto& value = storage_[internal_index];
-            value = data_ops<data_t>::create(std::forward<Args>(args)...);
+            value = data_if::create(std::forward<Args>(args)...);
             return value;
         }
         else
         {
             auto& value = storage_[internal_index];
-            data_ops<data_t>::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
+            data_if::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
             return value;
         }
     }
@@ -104,8 +105,10 @@ public:
     template<typename Fn>
     inline void traverse(const Fn& function)
     {
+        using valid_storage = decltype(valid_);
+
         auto index = valid_.find_first();
-        while (index != decltype(valid_)::npos)
+        while (index != valid_storage::npos)
         {
             function(to_external_index(index), storage_[index]);
             index = valid_.find_next(index);

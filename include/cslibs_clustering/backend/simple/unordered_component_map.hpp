@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/helper/static_warning.hpp>
-#include <cslibs_clustering/data/data.hpp>
+#include <cslibs_clustering/interface/data/data.hpp>
 #include <cstdint>
 #include <unordered_map>
 #include <type_traits>
@@ -14,17 +14,18 @@ namespace simple
 {
 namespace detail
 {
-template<typename data_t_, typename index_interface_t_, std::size_t own_index, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
+template<typename data_interface_t_, typename index_interface_t_, std::size_t own_index, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
 class UnorderedComponentMapStorage
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
     using index_accessor_t = typename index_if::template dimension<own_index>;
     using index_element_t = typename index_accessor_t::value_type;
 private:
-    using lookup_map_t = std::unordered_map<index_element_t, UnorderedComponentMapStorage<data_t, index_if, own_index + 1, last_index, on_duplicate_index_strategy>>;
+    using lookup_map_t = std::unordered_map<index_element_t, UnorderedComponentMapStorage<data_if, index_if, own_index + 1, last_index, on_duplicate_index_strategy>>;
 
 public:
     template<typename... Args>
@@ -73,18 +74,19 @@ private:
     lookup_map_t lookup_;
 };
 
-template<typename data_t_, typename index_interface_t_, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
-class UnorderedComponentMapStorage<data_t_, index_interface_t_, last_index, last_index, on_duplicate_index_strategy>
+template<typename data_interface_t_, typename index_interface_t_, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
+class UnorderedComponentMapStorage<data_interface_t_, index_interface_t_, last_index, last_index, on_duplicate_index_strategy>
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
     using index_accessor_t = typename index_if::template dimension<last_index>;
     using index_element_t = typename index_accessor_t::value_type;
 private:
-    using lookup_map_t = std::unordered_map<index_element_t, data_t_>;
+    using lookup_map_t = std::unordered_map<index_element_t, data_t>;
 
 public:
     template<typename... Args>
@@ -94,13 +96,13 @@ public:
         auto itr = storage_.find(index_value);
         if (itr == storage_.end())
         {
-            auto result = storage_.emplace(index_value, data_ops<data_t>::create(std::forward<Args>(args)...));
+            auto result = storage_.emplace(index_value, data_if::create(std::forward<Args>(args)...));
             return result.first->second;
         }
         else
         {
             auto& value = itr->second;
-            data_ops<data_t>::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
+            data_if::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
             return value;
         }
     }
@@ -147,11 +149,12 @@ private:
 
 }
 
-template<typename data_t_, typename index_interface_t_, typename... options_ts_>
+template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
 class UnorderedComponentMap
 {
 public:
-    using data_t = data_t_;
+    using data_if = data_interface_t_;
+    using data_t = typename data_if::type;
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
 
@@ -159,7 +162,7 @@ public:
 
 private:
     static constexpr auto index_dimensions = index_if::dimensions;
-    using storage_t = detail::UnorderedComponentMapStorage<data_t, index_if, 0, index_dimensions - 1, on_duplicate_index_strategy>;
+    using storage_t = detail::UnorderedComponentMapStorage<data_if, index_if, 0, index_dimensions - 1, on_duplicate_index_strategy>;
 
 public:
     template<typename... Args>
