@@ -35,7 +35,7 @@ struct auto_index<Data>
 
 int main()
 {
-    using Storage = AutoIndexStorage<Data, Map, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
+    using Storage = AutoIndexStorage<Data, Map>;
     Storage storage;
 
     storage.insert({ 3.4, 5 });

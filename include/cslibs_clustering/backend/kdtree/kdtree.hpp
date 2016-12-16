@@ -21,19 +21,8 @@ public:
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
 
-    using split_value_type_opt = helper::get_option_t<
-            options::tags::split_index_type,
-            options::split_value_type<float>,
-            options_ts_...>;
-    using split_value_t = typename split_value_type_opt::type;
-
-    using on_duplicate_index_opt = helper::get_option_t<
-            options::tags::on_duplicate_index,
-            options::on_duplicate_index<options::OnDuplicateIndex::REPLACE>,
-            options_ts_...>;
-    static constexpr auto on_duplicate_index_strategy = on_duplicate_index_opt::value;
-
-    //static_assert(!(on_duplicate_index_strategy == options::OnDuplicateIndex::MERGE) || options::is_on_duplicate_index_merge_available<data_t>::value, "Merge operation is unsupported");
+    using split_value_t = option::get_option<option::split_value_type_opt, options_ts_...>;
+    static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
 
 private:
     struct Node

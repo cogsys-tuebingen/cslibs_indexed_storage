@@ -69,21 +69,17 @@ int main(int argc, char* argv[])
 
     using kd_tree = cc::Storage<
             tests::Data, tests::Index,
-            cc::backend::kdtree::KDTree,
-            cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
+            cc::backend::kdtree::KDTree
     >;
     using array = cc::Storage<
         tests::Data, tests::Index,
         cc::backend::array::Array,
-        cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>,
-        cc::backend::options::array_size<100ul, 100ul, 100ul>,
-        cc::backend::options::array_offset<int, -50, -50, -50>,
-        cc::backend::options::array_dynamic_only<false>
+        cc::option::array_size<100ul, 100ul, 100ul>,
+        cc::option::array_offset<int, -50, -50, -50>
     >;
     using paged = cc::Storage<
         tests::Data, tests::Index,
-        cc::backend::simple::UnorderedComponentMap,
-        cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
+        cc::backend::simple::UnorderedComponentMap
     >;
 
     timing::Benchmark::timing<500>("kd-tree", std::bind(&tests::create<kd_tree>, std::cref(points)));

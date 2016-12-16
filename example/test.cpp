@@ -68,23 +68,20 @@ int main(int argc, char* argv[])
     using Storage =
 //    cc::Storage<DataType, IndexType,
 //                cc::backend::kdtree::KDTree,
-//                cc::backend::options::split_value_type<double>,
-//                cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
+//                cc::backend::options::split_value_type<double>
 //    >;
 //    cc::Storage<DataType, IndexType,
-//                cc::backend::simple::UnorderedComponentMap,
-//                cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>
+//                cc::backend::simple::UnorderedComponentMap
 //    >;
     cc::Storage<DataType, IndexType,
                 cc::backend::array::Array,
-                cc::backend::options::on_duplicate_index<cc::backend::options::OnDuplicateIndex::MERGE>,
-                cc::backend::options::array_size<10, 10>,
-                cc::backend::options::array_offset<int, -5, -5>
+                cc::option::array_size<10, 10>,
+                cc::option::array_offset<int, -5, -5>
     >;
 
     Storage storage;
-    storage.set<cc::backend::options::tags::array_size>(10ul, 10ul);
-    storage.set<cc::backend::options::tags::array_offset>(-5, -5);
+    storage.set<cc::option::tags::array_size>(10ul, 10ul);
+    storage.set<cc::option::tags::array_offset>(-5, -5);
 
     {
         std::array<std::pair<int, int>, 4> offsets =

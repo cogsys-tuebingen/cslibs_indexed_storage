@@ -15,10 +15,10 @@ struct data_ops
         return {std::forward<Args>(args)...};
     }
 
-    template<backend::options::OnDuplicateIndex strategy, typename... Args>
+    template<option::MergeStrategy strategy, typename... Args>
     static inline constexpr void merge(data_t& self, Args&&... args)
     {
-        return strategy == backend::options::OnDuplicateIndex::REPLACE ?
+        return strategy == option::MergeStrategy::REPLACE ?
                (self.~data_t(), new (&self) data_t(create(std::forward<Args>(args)...)), (void) 0) :    //! \todo placement new should only be used if not move assignable
                (self.merge(std::forward<Args>(args)...), (void) 0);
     }

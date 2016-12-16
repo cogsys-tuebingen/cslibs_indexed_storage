@@ -6,6 +6,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
+#include <cslibs_clustering/helper/index_sequence.hpp>
 
 namespace cslibs_clustering
 {
@@ -13,6 +14,21 @@ namespace backend
 {
 namespace array
 {
+
+namespace detail
+{
+template<typename T, typename TT>
+struct empty_array_maker;
+
+template<typename T, std::size_t... idx>
+struct empty_array_maker<T, helper::index_sequence<idx...>>
+{
+    using type = option::detail::value_holder<typename T::value_type, ((void) idx, 0)...>;
+};
+
+template<typename T, std::size_t count>
+using empty_array = typename empty_array_maker<T, typename helper::make_index_sequence<count>::type>::type;
+}
 
 template<typename data_t_, typename index_wrapper_t_, typename... options_ts_>
 class Array
@@ -26,29 +42,9 @@ public:
     using array_size_t = std::array<std::size_t, index_wrapper_t::dimensions>;
     using array_offset_t = index_t;
 
-    using on_duplicate_index_opt = helper::get_option_t<
-            options::tags::on_duplicate_index,
-            options::on_duplicate_index<options::OnDuplicateIndex::REPLACE>,
-            options_ts_...>;
-    static constexpr auto on_duplicate_index_strategy = on_duplicate_index_opt::value;
-
-    using array_size_opt = helper::get_option_t<
-            options::tags::array_size,
-            options::array_size<>,
-            options_ts_...>;
-    static constexpr auto static_array_size = array_size_opt::type::value;
-
-    using array_offset_opt = helper::get_option_t<
-            options::tags::array_offset,
-            options::array_offset<index_t>,
-            options_ts_...>;
-    static constexpr auto static_array_offset = array_offset_opt::type::value;
-
-    using array_dynamic_only_opt = helper::get_option_t<
-            options::tags::array_dynamic_only,
-            options::array_dynamic_only<>,
-            options_ts_...>;
-    static constexpr auto array_dynamic_only = array_dynamic_only_opt::value;
+    static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
+    static constexpr auto static_array_size     = option::get_option_raw<option::tags::array_size, detail::empty_array<array_size_t, std::tuple_size<array_size_t>::value>, options_ts_...>::value;
+    static constexpr auto static_array_offset   = option::get_option_raw<option::tags::array_offset, detail::empty_array<array_offset_t, std::tuple_size<array_offset_t>::value>, options_ts_...>::value;
 
 private:
     using internal_index_t = std::size_t;
@@ -117,7 +113,7 @@ public:
     }
 
     template<typename... Args>
-    void set(options::tags::array_size, Args&&... new_size)
+    void set(option::tags::array_size, Args&&... new_size)
     {
         if (valid_.any())
             throw std::runtime_error("Resize not allowed with active data");
@@ -127,7 +123,7 @@ public:
     }
 
     template<typename... Args>
-    void set(options::tags::array_offset, Args&&... new_offset)
+    void set(option::tags::array_offset, Args&&... new_offset)
     {
         if (valid_.any())
             throw std::runtime_error("Offset change not allowed with active data");
@@ -183,11 +179,6 @@ private:
     }
 
 private:
-//    array_size_t size_ = (array_dynamic_only ? array_size_t{} : static_array_size);
-//    array_offset_t offset_ = (array_dynamic_only ? array_offset_t{} : static_array_offset);
-//
-//    data_t* storage_ = (array_dynamic_only ? nullptr : new data_t[get_internal_size()]);
-//    boost::dynamic_bitset<uint64_t> valid_{array_dynamic_only ? 0 : get_internal_size()};
     array_size_t size_ = static_array_size;
     array_offset_t offset_ = static_array_offset;
 

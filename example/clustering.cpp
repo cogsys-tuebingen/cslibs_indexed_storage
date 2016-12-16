@@ -103,11 +103,11 @@ struct hash<Index>
 
 int main()
 {
-//    using StorageType = Storage<Data, Index, kdtree::KDTree, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
-//    using StorageType = Storage<Data, Index, simple::UnorderedComponentMap, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
-//    using StorageType = Storage<Data, Index, simple::Map, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
-    using StorageType = Storage<Data, Index, simple::UnorderedMap, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
-//    using StorageType = Storage<Data, Index, array::Array, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>, options::array_size<11, 11>, options::array_offset<int, -5, -5>>;
+//    using StorageType = Storage<Data, Index, kdtree::KDTree>;
+//    using StorageType = Storage<Data, Index, simple::UnorderedComponentMap>;
+//    using StorageType = Storage<Data, Index, simple::Map>;
+//    using StorageType = Storage<Data, Index, simple::UnorderedMap>;
+    using StorageType = Storage<Data, Index, array::Array, option::array_size<11, 11>, option::array_offset<int, -5, -5>>;
 
     // generate some test data
     StorageType storage;

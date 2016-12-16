@@ -14,7 +14,7 @@ namespace simple
 {
 namespace detail
 {
-template<typename data_t_, typename index_wrapper_t_, std::size_t own_index, std::size_t last_index, options::OnDuplicateIndex on_duplicate_index_strategy>
+template<typename data_t_, typename index_wrapper_t_, std::size_t own_index, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
 class UnorderedComponentMapStorage
 {
 public:
@@ -73,7 +73,7 @@ private:
     lookup_map_t lookup_;
 };
 
-template<typename data_t_, typename index_wrapper_t_, std::size_t last_index, options::OnDuplicateIndex on_duplicate_index_strategy>
+template<typename data_t_, typename index_wrapper_t_, std::size_t last_index, option::MergeStrategy on_duplicate_index_strategy>
 class UnorderedComponentMapStorage<data_t_, index_wrapper_t_, last_index, last_index, on_duplicate_index_strategy>
 {
 public:
@@ -155,11 +155,7 @@ public:
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
 
-    using on_duplicate_index_opt = helper::get_option_t<
-            options::tags::on_duplicate_index,
-            options::on_duplicate_index<options::OnDuplicateIndex::REPLACE>,
-            options_ts_...>;
-    static constexpr auto on_duplicate_index_strategy = on_duplicate_index_opt::value;
+    static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
 
 private:
     static constexpr auto index_dimensions = index_wrapper_t::dimensions;

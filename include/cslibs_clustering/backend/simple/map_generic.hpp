@@ -19,11 +19,7 @@ public:
     using index_wrapper_t = index_wrapper_t_;
     using index_t = typename index_wrapper_t::type;
 
-    using on_duplicate_index_opt = helper::get_option_t<
-            options::tags::on_duplicate_index,
-            options::on_duplicate_index<options::OnDuplicateIndex::REPLACE>,
-            options_ts_...>;
-    static constexpr auto on_duplicate_index_strategy = on_duplicate_index_opt::value;
+    static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
 
 public:
     template<typename... Args>
