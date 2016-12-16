@@ -164,10 +164,11 @@ private:
     index_t to_external_index(internal_index_t internal_index) const
     {
         index_t index;
-        for (std::size_t i = 0;i < index_wrapper_t::dimensions; ++i)
+        for (std::size_t i = index_wrapper_t::dimensions; i > 0; --i)
         {
-            index[i] = internal_index % size_[i] + offset_[i];
-            internal_index = internal_index / size_[i];
+            const std::size_t ri = i - 1;
+            index[ri] = internal_index % size_[ri] + offset_[ri];
+            internal_index = internal_index / size_[ri];
         }
         return index;
     }
