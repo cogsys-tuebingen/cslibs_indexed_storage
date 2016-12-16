@@ -2,6 +2,8 @@
 #include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
 #include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
+#include <cslibs_clustering/backend/simple/map.hpp>
+#include <cslibs_clustering/backend/simple/unordered_map.hpp>
 #include <cslibs_clustering/index/index_std.hpp>
 #include <cslibs_clustering/operations/clustering.hpp>
 
@@ -82,12 +84,30 @@ struct ClusterOp
 
 }
 
+namespace std
+{
+//! needed for simple::UnorderedMap
+template<>
+struct hash<Index>
+{
+    typedef Index argument_type;
+    typedef std::size_t result_type;
+    result_type operator()(argument_type const& s) const
+    {
+        result_type const h1 ( std::hash<int>{}(s[0]) );
+        result_type const h2 ( std::hash<int>{}(s[1]) );
+        return h1 ^ (h2 << 1);
+    }
+};
+}
 
 int main()
 {
 //    using StorageType = Storage<Data, Index, kdtree::KDTree, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
 //    using StorageType = Storage<Data, Index, simple::UnorderedComponentMap, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
-    using StorageType = Storage<Data, Index, array::Array, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>, options::array_size<11, 11>, options::array_offset<int, -5, -5>>;
+//    using StorageType = Storage<Data, Index, simple::Map, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
+    using StorageType = Storage<Data, Index, simple::UnorderedMap, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>>;
+//    using StorageType = Storage<Data, Index, array::Array, backend::options::on_duplicate_index<backend::options::OnDuplicateIndex::MERGE>, options::array_size<11, 11>, options::array_offset<int, -5, -5>>;
 
     // generate some test data
     StorageType storage;
