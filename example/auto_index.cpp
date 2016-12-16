@@ -1,6 +1,6 @@
 #include <cslibs_clustering/storage/auto_index_storage.hpp>
 #include <cslibs_clustering/backend/simple/map.hpp>
-#include <cslibs_clustering/index/index_std.hpp>
+#include <cslibs_clustering/interface/index/index_std.hpp>
 
 #include <iostream>
 

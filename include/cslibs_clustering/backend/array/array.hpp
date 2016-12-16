@@ -30,16 +30,16 @@ template<typename T, std::size_t count>
 using empty_array = typename empty_array_maker<T, typename helper::make_index_sequence<count>::type>::type;
 }
 
-template<typename data_t_, typename index_wrapper_t_, typename... options_ts_>
+template<typename data_t_, typename index_interface_t_, typename... options_ts_>
 class Array
 {
 public:
     using data_t = data_t_;
 
-    using index_wrapper_t = index_wrapper_t_;
-    using index_t = typename index_wrapper_t::type;
+    using index_if = index_interface_t_;
+    using index_t = typename index_if::type;
 
-    using array_size_t = std::array<std::size_t, index_wrapper_t::dimensions>;
+    using array_size_t = std::array<std::size_t, index_if::dimensions>;
     using array_offset_t = index_t;
 
     static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
@@ -146,9 +146,9 @@ private:
     internal_index_t to_internal_index(const index_t& index) const
     {
         internal_index_t internal_index{};
-        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
+        for (std::size_t i = 0; i < index_if::dimensions; ++i)
         {
-            const auto value = index[i] - offset_[i];
+            const auto value = index_if::access(i, index) - offset_[i];
             if (value < 0 || size_[i] - value <= 0)
                 return invalid_index_value;
 
@@ -160,10 +160,10 @@ private:
     index_t to_external_index(internal_index_t internal_index) const
     {
         index_t index;
-        for (std::size_t i = index_wrapper_t::dimensions; i > 0; --i)
+        for (std::size_t i = index_if::dimensions; i > 0; --i)
         {
             const std::size_t ri = i - 1;
-            index[ri] = internal_index % size_[ri] + offset_[ri];
+            index_if::access(ri, index) = internal_index % size_[ri] + offset_[ri];
             internal_index = internal_index / size_[ri];
         }
         return index;
@@ -172,7 +172,7 @@ private:
     constexpr std::size_t get_internal_size()
     {
         std::size_t size = 1;
-        for (std::size_t i = 0; i < index_wrapper_t::dimensions; ++i)
+        for (std::size_t i = 0; i < index_if::dimensions; ++i)
             size *= size_[i];
 
         return size;

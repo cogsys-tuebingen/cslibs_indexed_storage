@@ -15,5 +15,6 @@ macro(create_test name)
   add_test(${name}_test ${name})
 endmacro()
 
-create_test(support_stl_array support/test_support_stl_array.cpp)
+create_test(support_stl_array support/test_support_std_array.cpp)
+create_test(support_stl_tuple support/test_support_std_tuple.cpp)
 create_test(operations_clustering_grid_neighboorhood operations/clustering/test_grid_neighborhood.cpp)

@@ -17,7 +17,7 @@ class Clustering
 public:
     using storage_t = storage_t_;
     using data_t = typename storage_t::data_t;
-    using index_wrapper_t = typename storage_t::index_wrapper_t;
+    using index_if = typename storage_t::index_if;
     using index_t = typename storage_t::index_t;
 
     Clustering(storage_t& storage) :
@@ -45,7 +45,7 @@ private:
                                     //! \todo can be replaced by auto in lambda with c++14, cannot use member function and std::bind due to performance reasons :/
                                     [this, &center, &cluster_op](const typename traits::visitor_index_t& offset)
                                     {
-                                        auto index = index_wrapper_t::add(center, offset);
+                                        auto index = index_if::add(center, offset);
                                         auto neighbour = storage_.get(index);
                                         if (!neighbour)
                                             return;

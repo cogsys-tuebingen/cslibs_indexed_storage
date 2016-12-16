@@ -12,14 +12,14 @@ namespace backend
 namespace kdtree
 {
 
-template<typename data_t_, typename index_wrapper_t_, typename... options_ts_>
+template<typename data_t_, typename index_interface_t_, typename... options_ts_>
 class KDTree
 {
 public:
     using data_t = data_t_;
 
-    using index_wrapper_t = index_wrapper_t_;
-    using index_t = typename index_wrapper_t::type;
+    using index_if = index_interface_t_;
+    using index_t = typename index_if::type;
 
     using split_value_t = option::get_option<option::split_value_type_opt, options_ts_...>;
     static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
@@ -34,9 +34,9 @@ private:
         {
             {
                 split_value_t max_delta = 0;
-                for (std::size_t i = 0; i < index_wrapper_t_::dimensions; ++i)
+                for (std::size_t i = 0; i < index_if::dimensions; ++i)
                 {
-                    auto delta = std::abs(this->index[i] - index[i]);
+                    auto delta = std::abs(index_if::access(i, this->index) - index_if::access(i, index));
                     if (delta > max_delta)
                     {
                         max_delta = delta;
@@ -44,7 +44,7 @@ private:
                     }
                 }
 
-                split_value = (this->index[split_dimension] + index[split_dimension]) / split_value_t(2);
+                split_value = (index_if::access(split_dimension, this->index) + index_if::access(split_dimension, index)) / split_value_t(2);
             }
 
             this->left = left;
@@ -55,7 +55,7 @@ private:
                 std::swap(left->data, this->data);
                 left->index = this->index;
 
-                right->index = std::move(index);
+                right->index = index;
                 return right;
             }
             else
@@ -90,6 +90,7 @@ public:
         {
             root_ = new Node();
             root_->index = index;
+            data_ops<data_t>::template merge<option::MergeStrategy::REPLACE>(root_->data, std::forward<Args>(args)...);
             return root_->data;
         }
         else

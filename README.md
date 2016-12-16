@@ -17,13 +17,13 @@ The only public access API is provided by the `Storage` type, which can be confi
 
 
 ### `Index` requirements
-Requirements are implicit through the `index_wrapper<Index>` specialization.
+Requirements are implicit through the `index_interface<Index>` specialization.
 
 There are already some supported STD containers, see [support](include/cslibs_clustering/index/std):
 * `std::array`
 
 
-`index_wrapper<Index>` requiements:
+`index_interface<Index>` requiements:
 * MUST have typedef `type`, real type passed through the interface
 * MUST have static value `dimensions`, dimension of the index, MUST be `> 0`
 * `type` MUST have `/*abritrary*/ operator[](std::size_t)`

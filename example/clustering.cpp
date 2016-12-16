@@ -4,7 +4,7 @@
 #include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
 #include <cslibs_clustering/backend/simple/map.hpp>
 #include <cslibs_clustering/backend/simple/unordered_map.hpp>
-#include <cslibs_clustering/index/index_std.hpp>
+#include <cslibs_clustering/interface/index/index_std.hpp>
 #include <cslibs_clustering/operations/clustering.hpp>
 
 #include <vector>
@@ -103,11 +103,11 @@ struct hash<Index>
 
 int main()
 {
-//    using StorageType = Storage<Data, Index, kdtree::KDTree>;
+    using StorageType = Storage<Data, Index, kdtree::KDTree>;
 //    using StorageType = Storage<Data, Index, simple::UnorderedComponentMap>;
 //    using StorageType = Storage<Data, Index, simple::Map>;
 //    using StorageType = Storage<Data, Index, simple::UnorderedMap>;
-    using StorageType = Storage<Data, Index, array::Array, option::array_size<11, 11>, option::array_offset<int, -5, -5>>;
+//    using StorageType = Storage<Data, Index, array::Array, option::array_size<11, 11>, option::array_offset<int, -5, -5>>;
 
     // generate some test data
     StorageType storage;

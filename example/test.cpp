@@ -2,7 +2,7 @@
 #include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
-#include <cslibs_clustering/index/index_std.hpp>
+#include <cslibs_clustering/interface/index/index_std.hpp>
 #include <cslibs_clustering/operations/clustering.hpp>
 
 #include <iostream>

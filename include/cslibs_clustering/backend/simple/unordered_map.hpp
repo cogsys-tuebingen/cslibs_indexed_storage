@@ -10,10 +10,10 @@ namespace backend
 namespace simple
 {
 
-template<typename data_t_, typename index_wrapper_t_, typename... options_ts_>
+template<typename data_t_, typename index_interface_t_, typename... options_ts_>
 class UnorderedMap : public MapGeneric<
-        std::unordered_map<typename index_wrapper_t_::type, data_t_>,
-        data_t_, index_wrapper_t_, options_ts_...>
+        std::unordered_map<typename index_interface_t_::type, data_t_>,
+        data_t_, index_interface_t_, options_ts_...>
 {
 };
 

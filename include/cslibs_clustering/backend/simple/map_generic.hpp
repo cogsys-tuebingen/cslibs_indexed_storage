@@ -11,13 +11,13 @@ namespace backend
 namespace simple
 {
 
-template<typename map_t, typename data_t_, typename index_wrapper_t_, typename... options_ts_>
+template<typename map_t, typename data_t_, typename index_if_, typename... options_ts_>
 class MapGeneric
 {
 public:
     using data_t = data_t_;
-    using index_wrapper_t = index_wrapper_t_;
-    using index_t = typename index_wrapper_t::type;
+    using index_if = index_if_;
+    using index_t = typename index_if::type;
 
     static constexpr auto on_duplicate_index_strategy = option::get_option<option::merge_strategy_opt, options_ts_...>::value;
 

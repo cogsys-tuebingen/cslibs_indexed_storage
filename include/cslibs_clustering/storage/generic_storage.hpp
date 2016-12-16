@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cslibs_clustering/index/index.hpp>
+#include <cslibs_clustering/interface/index/index.hpp>
 
 namespace cslibs_clustering
 {
@@ -20,9 +20,9 @@ class Storage
 {
 public:
     using data_t = data_t_;
-    using index_wrapper_t = support::index_wrapper<index_t_>;
-    using index_t = typename index_wrapper_t::type;
-    using backend_t = backend_t_<data_t, index_wrapper_t, args_t_...>;
+    using index_if = interface::index_interface<index_t_>;
+    using index_t = typename index_if::type;
+    using backend_t = backend_t_<data_t, index_if, args_t_...>;
 
     template<typename... Args>
     inline data_t_& insert(const index_t& index, Args&& ... data)

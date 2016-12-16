@@ -17,9 +17,9 @@ public:
     using data_t = data_t_;
 
     using auto_index_t = auto_index<data_t>;
-    using index_wrapper_t = support::index_wrapper<typename auto_index_t::index_t>;
-    using index_t = typename index_wrapper_t::type;
-    using backend_t = backend_t_<data_t, index_wrapper_t, args_t_...>;
+    using index_if = interface::index_interface<typename auto_index_t::index_t>;
+    using index_t = typename index_if::type;
+    using backend_t = backend_t_<data_t, index_if, args_t_...>;
 
 public:
     Storage() = default;
