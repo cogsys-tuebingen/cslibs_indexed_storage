@@ -16,8 +16,9 @@ public:
     using data_if = interface::data_interface<data_interface_t_>;
     using data_t = typename data_if::type;
 
-    using auto_index_t = auto_index<data_t>;
-    using index_if = interface::index_interface<typename auto_index_t::index_t>;
+    using auto_index_t = auto_index<typename std::remove_pointer<data_t>::type>;
+    using auto_index_return_t = typename std::decay<decltype(std::declval<auto_index_t>().index(std::declval<typename std::remove_pointer<data_t>::type>()))>::type;
+    using index_if = interface::index_interface<auto_index_return_t>;
     using index_t = typename index_if::type;
 
     using backend_t = backend_t_<data_if, index_if, args_t_...>;
@@ -44,7 +45,7 @@ public:
 
     inline data_t& insert(data_t data)
     {
-        auto index = indexer_.index(data);
+        auto index = extract_index(typename std::is_pointer<data_t>::type{}, data);
         return backend_.insert(index, std::move(data));
     }
 
@@ -81,6 +82,16 @@ public:
     {
         return backend_.set(tag{}, std::forward<Args>(args)...);
     };
+
+private:
+    inline constexpr index_t extract_index(std::false_type, const data_t& data)
+    {
+        return indexer_.index(data);
+    }
+    inline constexpr index_t extract_index(std::true_type, const data_t& data)
+    {
+        return indexer_.index(*data);
+    }
 
 private:
     backend_t backend_;
