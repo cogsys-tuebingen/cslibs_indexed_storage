@@ -1,11 +1,13 @@
 #include <cslibs_clustering/storage/auto_index_storage.hpp>
 #include <cslibs_clustering/backend/array/array.hpp>
+#include <cslibs_clustering/backend/kdtree/kdtree.hpp>
 #include <cslibs_clustering/interface/index/index_std.hpp>
 
 #include <iostream>
 
 using namespace cslibs_clustering;
 using namespace cslibs_clustering::backend::array;
+using namespace cslibs_clustering::backend::kdtree;
 
 struct Data
 {
@@ -23,7 +25,7 @@ using Index = std::array<int, 2>;
 
 int main()
 {
-    using Storage = Storage<Data*, Index, Array, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
+    using Storage = Storage<Data*, Index, KDTree, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
     Storage storage;
 
     std::vector<Data> data;

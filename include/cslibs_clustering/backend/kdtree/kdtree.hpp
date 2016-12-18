@@ -91,7 +91,7 @@ public:
         {
             root_ = new Node();
             root_->index = index;
-            data_if::template merge<option::MergeStrategy::REPLACE>(root_->data, std::forward<Args>(args)...);
+            root_->data = data_if::create(std::forward<Args>(args)...);
             return root_->data;
         }
         else
@@ -106,9 +106,12 @@ public:
             }
 
             if (current->index != index)
+            {
                 current = current->split(new Node(), new Node(), index);
-
-            data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
+                current->data = data_if::create(std::forward<Args>(args)...);
+            }
+            else
+                data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
 
             return current->data;
         }
