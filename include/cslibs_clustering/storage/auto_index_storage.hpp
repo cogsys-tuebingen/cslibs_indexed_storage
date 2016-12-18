@@ -5,15 +5,20 @@
 namespace cslibs_clustering
 {
 
+namespace detail
+{
+struct auto_index_tag {};
+}
+
 template<typename data_t>
 struct auto_index;
 
 
-template<typename data_interface_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
-class Storage<data_interface_t_, auto_index<data_interface_t_>, backend_t_, args_t_...>
+template<typename data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
+class Storage<data_t_, detail::auto_index_tag, backend_t_, args_t_...>
 {
 public:
-    using data_if = interface::data_interface<data_interface_t_>;
+    using data_if = interface::data_interface<data_t_>;
     using data_t = typename data_if::type;
 
     using auto_index_t = auto_index<typename std::remove_pointer<data_t>::type>;
@@ -38,7 +43,7 @@ public:
     }
 
     template<typename... Args>
-    inline data_interface_t_& insert(Args&& ... args)
+    inline data_t& insert(Args&& ... args)
     {
         return insert(data_if::create(std::forward<Args>(args)...));
     }
@@ -98,7 +103,12 @@ private:
     auto_index_t indexer_;
 };
 
+template<typename data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
+class Storage<non_owning<data_t_>, detail::auto_index_tag, backend_t_, args_t_...> :
+        public Storage<typename non_owning<data_t_>::type, detail::auto_index_tag, backend_t_, args_t_...>
+{};
+
 template<typename data_t, template<typename, typename, typename...> class backend_t_, typename... args_t_>
-using AutoIndexStorage = Storage<data_t, auto_index<data_t>, backend_t_, args_t_...>;
+using AutoIndexStorage = Storage<data_t, detail::auto_index_tag, backend_t_, args_t_...>;
 
 }

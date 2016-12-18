@@ -4,6 +4,7 @@
 #include <cslibs_clustering/interface/index/index_std.hpp>
 
 #include <iostream>
+#include <cslibs_clustering/storage.hpp>
 
 using namespace cslibs_clustering;
 using namespace cslibs_clustering::backend::array;
@@ -43,7 +44,7 @@ int main()
 
     // manual indexing
     {
-        using Storage = Storage<Data*, Index, KDTree, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
+        using Storage = Storage<non_owning<Data>, Index, KDTree, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
         Storage storage;
 
         storage.insert({ 3, 5 }, &data[0]);
@@ -61,7 +62,7 @@ int main()
 
     // auto indexing
     {
-        using Storage = AutoIndexStorage<Data*, Array, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
+        using Storage = AutoIndexStorage<non_owning<Data>, Array, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
         Storage storage;
 
         storage.insert(&data[0]);
