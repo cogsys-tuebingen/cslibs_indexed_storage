@@ -1,4 +1,5 @@
 #pragma once
+#include <cslibs_clustering_test/data.hpp>
 #include <gtest/gtest.h>
 #include <type_traits>
 
@@ -27,3 +28,6 @@
     )
 
 #endif
+
+#define ASSERT_CONATINS(container, value) \
+    ASSERT_TRUE((std::find(container.begin(), container.end(), value) != container.end()))
