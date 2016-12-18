@@ -52,7 +52,7 @@ struct data_merger<base_type*, option::MergeStrategy::REPLACE>
 {
     using type = typename std::add_pointer<base_type>::type;
 
-    static constexpr inline void apply(type*& self, type other)
+    static constexpr inline void apply(type& self, type other)
     {
         self = other;
     }
