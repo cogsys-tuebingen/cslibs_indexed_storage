@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cslibs_clustering/interface/index/index.hpp>
+#include <cslibs_clustering/interface/index/index_interface.hpp>
 #include <cstdint>
 #include <tuple>
 

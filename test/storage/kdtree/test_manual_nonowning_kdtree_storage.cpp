@@ -10,7 +10,7 @@ class Manual_NonOwning_KDTree_Storage : public ::testing::Test, public test::Ver
 {
 public:
     using Storage = cc::Storage<
-            cc::non_owning<test::Data>, test::Index,
+            cc::interface::non_owning<test::Data>, test::Index,
             cc::backend::kdtree::KDTree,
             cc::option::merge_strategy<strategy>
     >;

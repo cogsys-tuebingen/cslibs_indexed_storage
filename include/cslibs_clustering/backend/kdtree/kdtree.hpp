@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/kdtree/kdtree_options.hpp>
-#include <cslibs_clustering/interface/data/data.hpp>
+#include <cslibs_clustering/interface/data/data_interface.hpp>
 #include <limits>
 
 namespace cslibs_clustering
@@ -17,7 +17,8 @@ class KDTree
 {
 public:
     using data_if = data_interface_t_;
-    using data_t = typename data_if::type;
+    using data_storage_t = typename data_if::storage_type;
+    using data_output_t = typename data_if::output_type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
@@ -75,7 +76,7 @@ private:
         std::size_t split_dimension = {};
 
         index_t index;
-        data_t data;
+        data_storage_t data;
     };
 
 public:
@@ -85,14 +86,14 @@ public:
     }
 
     template<typename... Args>
-    inline data_t& insert(const index_t& index, Args&&... args)
+    inline data_output_t& insert(const index_t& index, Args&&... args)
     {
         if (root_ == nullptr)
         {
             root_ = new Node();
             root_->index = index;
             root_->data = data_if::create(std::forward<Args>(args)...);
-            return root_->data;
+            return data_if::expose(root_->data);
         }
         else
         {
@@ -113,11 +114,11 @@ public:
             else
                 data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
 
-            return current->data;
+            return data_if::expose(current->data);
         }
     }
 
-    inline data_t* get(const index_t& index)
+    inline data_output_t* get(const index_t& index)
     {
         if (root_ == nullptr)
             return nullptr;
@@ -133,10 +134,10 @@ public:
         if (current->index != index)
             return nullptr;
 
-        return &(current->data);
+        return &data_if::expose(current->data);
     }
 
-    inline const data_t* get(const index_t& index) const
+    inline const data_output_t* get(const index_t& index) const
     {
         if (root_ == nullptr)
             return nullptr;
@@ -152,7 +153,7 @@ public:
         if (current->index != index)
             return nullptr;
 
-        return &(current->data);
+        return &data_if::expose(current->data);
     }
 
     template<typename Fn>
@@ -183,7 +184,7 @@ private:
     inline void traverse(const Fn& function, Node* node)
     {
         if (node->is_leaf())
-            function(node->index, node->data);
+            function(node->index, data_if::expose(node->data));
         else
         {
             traverse(function, node->left);
@@ -195,7 +196,7 @@ private:
     inline void traverse(const Fn& function, const Node* node) const
     {
         if (node->is_leaf())
-            function(node->index, node->data);
+            function(node->index, data_if::expose(node->data));
         else
         {
             traverse(function, node->left);

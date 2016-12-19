@@ -1,4 +1,4 @@
-#include <cslibs_clustering/interface/index/index.hpp>
+#include <cslibs_clustering/interface/index/index_interface.hpp>
 #include <cslibs_clustering_test/testing.hpp>
 
 namespace cc = cslibs_clustering;

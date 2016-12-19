@@ -5,6 +5,9 @@
 #include <cslibs_clustering/interface/index/index_std.hpp>
 #include <cslibs_clustering/operations/clustering.hpp>
 
+
+
+
 #include <iostream>
 
 namespace cc = cslibs_clustering;
@@ -68,7 +71,7 @@ int main(int argc, char* argv[])
     using Storage =
 //    cc::Storage<DataType, IndexType,
 //                cc::backend::kdtree::KDTree,
-//                cc::backend::options::split_value_type<double>
+//                cc::option::split_value_type<double>
 //    >;
 //    cc::Storage<DataType, IndexType,
 //                cc::backend::simple::UnorderedComponentMap

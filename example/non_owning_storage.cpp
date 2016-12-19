@@ -44,7 +44,7 @@ int main()
 
     // manual indexing
     {
-        using Storage = Storage<non_owning<Data>, Index, KDTree, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
+        using Storage = Storage<interface::non_owning<Data>, Index, KDTree, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
         Storage storage;
 
         storage.insert({ 3, 5 }, &data[0]);
@@ -56,13 +56,13 @@ int main()
 
         storage.traverse([](const Storage::index_t&, const Storage::data_t& data)
                          {
-                             std::cout << "Data: " << data->x << ", " << data->y << std::endl;
+                             std::cout << "Data: " << data.x << ", " << data.y << std::endl;
                          });
     }
 
     // auto indexing
     {
-        using Storage = AutoIndexStorage<non_owning<Data>, Array, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
+        using Storage = AutoIndexStorage<interface::non_owning<Data>, Array, option::array_size<20, 20>, option::array_offset<int, -10, -10>, option::merge_strategy<option::MergeStrategy::MERGE>>;
         Storage storage;
 
         storage.insert(&data[0]);
@@ -74,7 +74,7 @@ int main()
 
         storage.traverse([](const Storage::index_t&, const Storage::data_t& data)
                          {
-                             std::cout << "Data: " << data->x << ", " << data->y << std::endl;
+                             std::cout << "Data: " << data.x << ", " << data.y << std::endl;
                          });
     }
 }

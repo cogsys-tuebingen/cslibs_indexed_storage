@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/helper/static_warning.hpp>
-#include <cslibs_clustering/interface/data/data.hpp>
+#include <cslibs_clustering/interface/data/data_interface.hpp>
 #include <cstdint>
 #include <unordered_map>
 #include <type_traits>
@@ -19,7 +19,7 @@ class UnorderedComponentMapStorage
 {
 public:
     using data_if = data_interface_t_;
-    using data_t = typename data_if::type;
+    using data_output_t = typename data_if::output_type;
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
     using index_accessor_t = typename index_if::template dimension<own_index>;
@@ -29,12 +29,12 @@ private:
 
 public:
     template<typename... Args>
-    inline data_t& insert(const index_t& index, Args&&... args)
+    inline data_output_t& insert(const index_t& index, Args&&... args)
     {
         return lookup_[index_accessor_t::access(index)].insert(index, std::forward<Args>(args)...);
     }
 
-    inline data_t* access(const index_t& index)
+    inline data_output_t* access(const index_t& index)
     {
         auto itr = lookup_.find(index_accessor_t::access(index));
         if (itr == lookup_.end())
@@ -42,7 +42,7 @@ public:
         return itr->second.access(index);
     }
 
-    inline const data_t* access(const index_t& index) const
+    inline const data_output_t* access(const index_t& index) const
     {
         auto itr = lookup_.find(index_accessor_t::access(index));
         if (itr == lookup_.end())
@@ -79,48 +79,49 @@ class UnorderedComponentMapStorage<data_interface_t_, index_interface_t_, last_i
 {
 public:
     using data_if = data_interface_t_;
-    using data_t = typename data_if::type;
+    using data_output_t = typename data_if::output_type;
+    using data_storage_t = typename data_if::storage_type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
     using index_accessor_t = typename index_if::template dimension<last_index>;
     using index_element_t = typename index_accessor_t::value_type;
 private:
-    using lookup_map_t = std::unordered_map<index_element_t, data_t>;
+    using lookup_map_t = std::unordered_map<index_element_t, data_storage_t>;
 
 public:
     template<typename... Args>
-    inline data_t& insert(const index_t& index, Args&&... args)
+    inline data_output_t& insert(const index_t& index, Args&&... args)
     {
         const auto index_value = index_accessor_t::access(index);
         auto itr = storage_.find(index_value);
         if (itr == storage_.end())
         {
             auto result = storage_.emplace(index_value, data_if::create(std::forward<Args>(args)...));
-            return result.first->second;
+            return data_if::expose(result.first->second);
         }
         else
         {
             auto& value = itr->second;
             data_if::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
-            return value;
+            return data_if::expose(value);
         }
     }
 
-    inline data_t* access(const index_t& index)
+    inline data_output_t* access(const index_t& index)
     {
         auto itr = storage_.find(index_accessor_t::access(index));
         if (itr == storage_.end())
             return nullptr;
-        return &(itr->second);
+        return &data_if::expose(itr->second);
     }
 
-    inline const data_t* access(const index_t& index) const
+    inline const data_output_t* access(const index_t& index) const
     {
         auto itr = storage_.find(index_accessor_t::access(index));
         if (itr == storage_.end())
             return nullptr;
-        return &(itr->second);
+        return &data_if::expose(itr->second);
     }
 
     template<typename Fn>
@@ -129,7 +130,7 @@ public:
         for (auto&& entry : storage_)
         {
             index_accessor_t::access(index) = entry.first;
-            function(index, entry.second);
+            function(index, data_if::expose(entry.second));
         }
     }
 
@@ -139,7 +140,7 @@ public:
         for (auto&& entry : storage_)
         {
             index_accessor_t::access(index) = entry.first;
-            function(index, entry.second);
+            function(index, data_if::expose(entry.second));
         }
     }
 
@@ -154,7 +155,7 @@ class UnorderedComponentMap
 {
 public:
     using data_if = data_interface_t_;
-    using data_t = typename data_if::type;
+    using data_output_t = typename data_if::output_type;
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
 
@@ -166,17 +167,17 @@ private:
 
 public:
     template<typename... Args>
-    inline data_t& insert(const index_t& index, Args&&... args)
+    inline data_output_t& insert(const index_t& index, Args&&... args)
     {
         return storage_.insert(index, std::forward<Args>(args)...);
     }
 
-    inline data_t* get(const index_t& index)
+    inline data_output_t* get(const index_t& index)
     {
         return storage_.access(index);
     }
 
-    inline const data_t* get(const index_t& index) const
+    inline const data_output_t* get(const index_t& index) const
     {
         return storage_.access(index);
     }

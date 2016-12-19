@@ -2,7 +2,7 @@
 
 #include <cslibs_clustering/backend/options.hpp>
 #include <cslibs_clustering/backend/array/array_options.hpp>
-#include <cslibs_clustering/interface/data/data.hpp>
+#include <cslibs_clustering/interface/data/data_interface.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
@@ -35,7 +35,8 @@ class Array
 {
 public:
     using data_if = data_interface_t_;
-    using data_t = typename data_if::type;
+    using data_storage_t = typename data_if::storage_type;
+    using data_output_t = typename data_if::output_type;
 
     using index_if = index_interface_t_;
     using index_t = typename index_if::type;
@@ -58,7 +59,7 @@ public:
     }
 
     template<typename... Args>
-    inline data_t& insert(const index_t& index, Args&&... args)
+    inline data_output_t& insert(const index_t& index, Args&&... args)
     {
         auto internal_index = to_internal_index(index);
         if (internal_index  == invalid_index_value)
@@ -68,17 +69,17 @@ public:
         {
             auto& value = storage_[internal_index];
             value = data_if::create(std::forward<Args>(args)...);
-            return value;
+            return data_if::expose(value);
         }
         else
         {
             auto& value = storage_[internal_index];
             data_if::template merge<on_duplicate_index_strategy>(value, std::forward<Args>(args)...);
-            return value;
+            return data_if::expose(value);
         }
     }
 
-    inline data_t* get(const index_t& index)
+    inline data_output_t* get(const index_t& index)
     {
         auto internal_index = to_internal_index(index);
         if (internal_index  == invalid_index_value)
@@ -87,10 +88,10 @@ public:
         if (!valid_.test(internal_index))
             return nullptr;
         else
-            return &(storage_[internal_index]);
+            return &data_if::expose(storage_[internal_index]);
     }
 
-    inline const data_t* get(const index_t& index) const
+    inline const data_output_t* get(const index_t& index) const
     {
         auto internal_index = to_internal_index(index);
         if (internal_index  == invalid_index_value)
@@ -99,7 +100,7 @@ public:
         if (!valid_.test(internal_index))
             return nullptr;
         else
-            return &(storage_[internal_index]);
+            return &data_if::expose(storage_[internal_index]);
     }
 
     template<typename Fn>
@@ -110,7 +111,7 @@ public:
         auto index = valid_.find_first();
         while (index != valid_storage::npos)
         {
-            function(to_external_index(index), storage_[index]);
+            function(to_external_index(index), data_if::expose(storage_[index]));
             index = valid_.find_next(index);
         }
     }
@@ -140,7 +141,7 @@ private:
         const std::size_t size = get_internal_size();
 
         delete[] storage_;
-        storage_ = new data_t[size];
+        storage_ = new data_output_t[size];
 
         valid_.clear();
         valid_.resize(size);
@@ -185,7 +186,7 @@ private:
     array_size_t size_ = static_array_size;
     array_offset_t offset_ = static_array_offset;
 
-    data_t* storage_ = new data_t[get_internal_size()];
+    data_storage_t* storage_ = new data_storage_t[get_internal_size()];
     boost::dynamic_bitset<uint64_t> valid_{get_internal_size()};
 };
 

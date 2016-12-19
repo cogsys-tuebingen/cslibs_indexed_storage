@@ -10,7 +10,7 @@ class Manual_NonOwning_Array_Storage : public ::testing::Test, public test::Veri
 {
 public:
     using Storage = cc::Storage<
-            cc::non_owning<test::Data>, test::Index,
+            cc::interface::non_owning<test::Data>, test::Index,
             cc::backend::array::Array,
             cc::option::array_size<10, 10>,
             cc::option::array_offset<test::Index::value_type, -5, -5>,

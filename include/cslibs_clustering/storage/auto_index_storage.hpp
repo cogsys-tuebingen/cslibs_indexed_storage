@@ -14,15 +14,17 @@ template<typename data_t>
 struct auto_index;
 
 
-template<typename data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
-class Storage<data_t_, detail::auto_index_tag, backend_t_, args_t_...>
+template<typename hinted_data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
+class Storage<hinted_data_t_, detail::auto_index_tag, backend_t_, args_t_...>
 {
 public:
-    using data_if = interface::data_interface<data_t_>;
-    using data_t = typename data_if::type;
+    using data_if = interface::data_interface<hinted_data_t_>;
+    using data_input_t = typename data_if::input_type;
+    using data_output_t = typename data_if::output_type;
+    using data_t = data_output_t;
 
-    using auto_index_t = auto_index<typename std::remove_pointer<data_t>::type>;
-    using auto_index_return_t = typename std::decay<decltype(std::declval<auto_index_t>().index(std::declval<typename std::remove_pointer<data_t>::type>()))>::type;
+    using auto_index_t = auto_index<typename std::remove_pointer<data_input_t>::type>;
+    using auto_index_return_t = typename std::decay<decltype(std::declval<auto_index_t>().index(std::declval<typename std::remove_pointer<data_input_t>::type>()))>::type;
     using index_if = interface::index_interface<auto_index_return_t>;
     using index_t = typename index_if::type;
 
@@ -43,23 +45,23 @@ public:
     }
 
     template<typename... Args>
-    inline data_t& insert(Args&& ... args)
+    inline data_output_t& insert(Args&& ... args)
     {
         return insert(data_if::create(std::forward<Args>(args)...));
     }
 
-    inline data_t& insert(data_t data)
+    inline data_output_t& insert(data_input_t data)
     {
-        auto index = extract_index(typename std::is_pointer<data_t>::type{}, data);
+        auto index = extract_index(typename std::is_pointer<data_input_t>::type{}, data);
         return backend_.insert(index, std::move(data));
     }
 
-    inline data_t* get(const index_t& index)
+    inline data_output_t* get(const index_t& index)
     {
         return backend_.get(index);
     }
 
-    inline const data_t* get(const index_t& index) const
+    inline const data_output_t* get(const index_t& index) const
     {
         return backend_.get(index);
     }
@@ -89,11 +91,11 @@ public:
     };
 
 private:
-    inline constexpr index_t extract_index(std::false_type, const data_t& data)
+    inline constexpr index_t extract_index(std::false_type, const data_input_t& data)
     {
         return indexer_.index(data);
     }
-    inline constexpr index_t extract_index(std::true_type, const data_t& data)
+    inline constexpr index_t extract_index(std::true_type, const data_input_t& data)
     {
         return indexer_.index(*data);
     }
@@ -102,11 +104,6 @@ private:
     backend_t backend_;
     auto_index_t indexer_;
 };
-
-template<typename data_t_, template<typename, typename, typename...> class backend_t_, typename... args_t_>
-class Storage<non_owning<data_t_>, detail::auto_index_tag, backend_t_, args_t_...> :
-        public Storage<typename non_owning<data_t_>::type, detail::auto_index_tag, backend_t_, args_t_...>
-{};
 
 template<typename data_t, template<typename, typename, typename...> class backend_t_, typename... args_t_>
 using AutoIndexStorage = Storage<data_t, detail::auto_index_tag, backend_t_, args_t_...>;
