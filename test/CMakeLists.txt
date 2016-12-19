@@ -29,6 +29,7 @@ create_test(storage
   storage/array/*.cpp
   storage/kdtree/*.cpp
   )
+create_test(interface_data_merge interface/test_data_merge.cpp)
 
 # add "run all" target
 file(GLOB_RECURSE all_test_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)

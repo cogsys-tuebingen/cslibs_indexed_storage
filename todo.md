@@ -16,3 +16,10 @@
 
 * Refactor test cases for different backends
   * Recudes copy&paste code 
+  
+* Variadic Merge: Add type_trait tests that code certain constructions are invalid
+  
+# Open Questions
+* Varidaic Merge: Should we allow a different signature that constructors?
+  * May already implicitly rejected due to template instantiations
+  * Explicit warning would be nicer
