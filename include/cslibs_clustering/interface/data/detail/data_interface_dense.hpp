@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/interface/data/data_storage_hints.hpp>
+#include <cslibs_clustering/interface/data/data_merge.hpp>
 #include <utility>
 
 namespace cslibs_clustering
@@ -30,7 +31,8 @@ struct dense_data_merger<type, option::MergeStrategy::MERGE>
     template<typename... Args>
     static constexpr inline void apply(type& self, Args&&... args)
     {
-        self.merge(std::forward<Args>(args)...);
+        using ::cslibs_clustering::merge;
+        merge(self, std::forward<Args>(args)...);
     }
 };
 

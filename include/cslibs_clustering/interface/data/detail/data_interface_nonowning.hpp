@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cslibs_clustering/interface/data/data_storage_hints.hpp>
+#include <cslibs_clustering/interface/data/data_merge.hpp>
 #include <utility>
 
 namespace cslibs_clustering
@@ -27,7 +28,8 @@ struct nonowning_data_merger<type, option::MergeStrategy::MERGE>
     template<typename... Args>
     static constexpr inline void apply(type& self, type other)
     {
-        self->merge(*other);
+        using ::cslibs_clustering::merge;
+        merge(*self, *other);
     }
 };
 }
