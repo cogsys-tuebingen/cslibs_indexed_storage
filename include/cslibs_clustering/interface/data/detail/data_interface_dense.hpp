@@ -50,7 +50,11 @@ struct dense_data_interface
     template<typename... Args>
     static inline constexpr storage_type create(Args&&... args)
     {
+#if __GNUC__ > 5
         return { std::forward<Args>(args)... };
+#else
+        return storage_type(std::forward<Args>(args)...);
+#endif
     }
 
     template<option::MergeStrategy strategy, typename... Args>

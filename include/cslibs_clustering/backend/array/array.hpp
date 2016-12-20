@@ -187,7 +187,7 @@ private:
     array_offset_t offset_ = static_array_offset;
 
     data_storage_t* storage_ = new data_storage_t[get_internal_size()];
-    boost::dynamic_bitset<uint64_t> valid_{get_internal_size()};
+    boost::dynamic_bitset<uint64_t> valid_ = boost::dynamic_bitset<uint64_t>(get_internal_size());
 };
 
 }

@@ -185,14 +185,14 @@ public:
     template<typename Fn>
     inline void traverse(const Fn& function)
     {
-        index_t index{};
+        index_t index;
         return storage_.traverse(index, function);
     }
 
     template<typename Fn>
     inline void traverse(const Fn& function) const
     {
-        index_t index{};
+        index_t index;
         return storage_.traverse(index, function);
     }
 
