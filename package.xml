@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>cslibs_clustering</name>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
   <description>
     Library package for fast and flexible indexed data storage.
     Contains operations for common actions on indexed data, e.g. clustering.
