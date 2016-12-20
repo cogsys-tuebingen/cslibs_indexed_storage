@@ -70,6 +70,11 @@ public:
             function(entry.first, data_if::expose(entry.second));
     }
 
+    inline void clear()
+    {
+        storage_.clear();
+    }
+
 private:
     map_t storage_;
 };

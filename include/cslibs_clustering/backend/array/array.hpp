@@ -116,6 +116,24 @@ public:
         }
     }
 
+    template<typename Fn>
+    inline void traverse(const Fn& function) const
+    {
+        using valid_storage = decltype(valid_);
+
+        auto index = valid_.find_first();
+        while (index != valid_storage::npos)
+        {
+            function(to_external_index(index), data_if::expose(storage_[index]));
+            index = valid_.find_next(index);
+        }
+    }
+
+    inline void clear()
+    {
+        valid_.clear();
+    }
+
     template<typename... Args>
     void set(option::tags::array_size, Args&&... new_size)
     {

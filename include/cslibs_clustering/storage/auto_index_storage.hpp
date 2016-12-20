@@ -78,6 +78,11 @@ public:
         return backend_.traverse(function);
     }
 
+    inline void clear()
+    {
+        return backend_.clear();
+    }
+
     template<typename tag, typename... Args>
     inline void set(Args&&... args)
     {

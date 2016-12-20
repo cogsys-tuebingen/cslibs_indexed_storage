@@ -70,6 +70,11 @@ public:
         }
     }
 
+    inline void clear()
+    {
+        lookup_.clear();
+    }
+
 private:
     lookup_map_t lookup_;
 };
@@ -144,6 +149,11 @@ public:
         }
     }
 
+    inline void clear()
+    {
+        storage_.clear();
+    }
+
 private:
     lookup_map_t storage_;
 };
@@ -194,6 +204,11 @@ public:
     {
         index_t index;
         return storage_.traverse(index, function);
+    }
+
+    inline void clear()
+    {
+        storage_.clear();
     }
 
 private:
