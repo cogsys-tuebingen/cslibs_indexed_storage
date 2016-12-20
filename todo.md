@@ -10,6 +10,7 @@
 * Improve `auto_index` to support different indexer per data type
   * Use `auto_index_tag` as marker instead of `auto_index<data_t>` wrapper
   * Pass `auto_index` functor as template param?
+  * Allow auto_index optionally on variadics
 
 * Refactor test cases for different backends
   * Recudes copy&paste code 
