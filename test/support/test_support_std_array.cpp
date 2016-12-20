@@ -35,7 +35,7 @@ TYPED_TEST(SupportStlArrayTest, SetIntegal)
     using array = std::array<int, 3>;
     using type = cc::interface::index_interface<array>;
 
-    array value{};
+    array value;
 
     type::template dimension<0>::access(value) = 1;
     type::template dimension<1>::access(value) = 2;
@@ -51,13 +51,13 @@ TEST(SupportStlArray, Add)
     using array = std::array<int, 3>;
     using type = cc::interface::index_interface<array>;
 
-    array value_a{};
+    array value_a;
     type::template dimension<0>::access(value_a) = 1;
     type::template dimension<1>::access(value_a) = 2;
     type::template dimension<2>::access(value_a) = 3;
 
     {
-        array value_b{};
+        array value_b;
         type::template dimension<0>::access(value_b) = 4;
         type::template dimension<1>::access(value_b) = 5;
         type::template dimension<2>::access(value_b) = 6;

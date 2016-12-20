@@ -4,9 +4,9 @@ project(cslibs_clustering)
 include(cmake/ForceCpp11.cmake)
 include(cmake/EnableWarnings.cmake)
 
-find_package(Boost REQUIRED)  # Boost required (header only)
-find_package(GTest)           # for tests
-find_package(Doxygen)         # for documentation
+find_package(Boost REQUIRED)              # Boost required (header only)
+find_package(Doxygen)                     # for documentation
+include(dep/googletest/googletest.cmake)  # for tests
 
 # Catkin is optional
 find_package(catkin QUIET)
