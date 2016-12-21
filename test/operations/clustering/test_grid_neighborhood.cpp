@@ -8,7 +8,7 @@ TEST(ClusteringGridNeighborhoodTest, Dummy)
     {
         using t = cc::GridNeighborhoodStatic<2, 3, true>;
         t value{};
-        value.visit([](t::offset_t o) { std::cout << int(o[0]) << ", " << int(o[1]) << ", " << int(o[2]) << std::endl; });
+        value.visit([](t::offset_t o) { std::cout << int(o[0]) << ", " << int(o[1]) << std::endl; });
         STATIC_ASSERT_EQ_VALUE(t::count, 8);
     }
     {

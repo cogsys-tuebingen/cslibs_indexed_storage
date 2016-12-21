@@ -6,7 +6,6 @@ include(cmake/EnableWarnings.cmake)
 
 find_package(Boost REQUIRED)              # Boost required (header only)
 find_package(Doxygen)                     # for documentation
-include(dep/googletest/googletest.cmake)  # for tests
 
 # Catkin is optional
 find_package(catkin QUIET)
@@ -17,6 +16,9 @@ if (${catkin_FOUND})
   )
 
   install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+else()
+  # only include tests if we are not running under catkin which alreay provides googletest
+  include(dep/googletest/googletest.cmake)  # for tests
 endif ()
 
 # Setup library

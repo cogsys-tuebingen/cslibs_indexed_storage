@@ -65,12 +65,22 @@ public:
         if (internal_index  == invalid_index_value)
             throw std::runtime_error("Invalid index"); //! \todo find better handling?
 
+#if BOOST_VERSION >= 105600
         if (!valid_.test_set(internal_index))
         {
             auto& value = storage_[internal_index];
             value = data_if::create(std::forward<Args>(args)...);
             return data_if::expose(value);
         }
+#else
+        if (!valid_.test(internal_index))
+        {
+            auto& value = storage_[internal_index];
+            value = data_if::create(std::forward<Args>(args)...);
+            valid_.set(internal_index);
+            return data_if::expose(value);
+        }
+#endif
         else
         {
             auto& value = storage_[internal_index];

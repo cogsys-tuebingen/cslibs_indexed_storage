@@ -121,7 +121,7 @@ int main()
     StorageType storage;
 
     // dynamically calculate index bounds with storage.get_indexer();
-    storage.set<option::tags::array_size>(10, 10);
+    storage.set<option::tags::array_size>(10ul, 10ul);
     storage.set<option::tags::array_offset>(-5, -5);
 
     {
