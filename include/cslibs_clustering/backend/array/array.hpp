@@ -159,7 +159,7 @@ private:
         const std::size_t size = get_internal_size();
 
         delete[] storage_;
-        storage_ = new data_output_t[size];
+        storage_ = new data_storage_t[size];
 
         valid_.clear();
         valid_.resize(size);
