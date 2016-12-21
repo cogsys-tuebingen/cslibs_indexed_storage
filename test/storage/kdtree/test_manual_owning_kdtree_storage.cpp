@@ -1,8 +1,8 @@
-#include <cslibs_clustering/storage.hpp>
-#include <cslibs_clustering/backend/kdtree/kdtree.hpp>
-#include <cslibs_clustering_test/testing.hpp>
+#include <cslibs_indexed_storage/storage.hpp>
+#include <cslibs_indexed_storage/backend/kdtree/kdtree.hpp>
+#include <cslibs_indexed_storage_test/testing.hpp>
 
-namespace cc = cslibs_clustering;
+namespace cc = cslibs_indexed_storage;
 
 // -----------------------------------------------------------
 template<cc::option::MergeStrategy strategy>

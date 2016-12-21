@@ -1,4 +1,4 @@
-# CS - Library: Clustering
+# CS - Library: Indexed Storage
 This library provides fast, low overhead datastructure implementations for indexed objects.
 
 Also included are configurable operations like:

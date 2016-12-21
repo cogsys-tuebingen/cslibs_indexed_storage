@@ -1,11 +1,11 @@
-#include <cslibs_clustering/storage/auto_index_storage.hpp>
-#include <cslibs_clustering/backend/simple/map.hpp>
-#include <cslibs_clustering/interface/index/index_std.hpp>
+#include <cslibs_indexed_storage/storage/auto_index_storage.hpp>
+#include <cslibs_indexed_storage/backend/simple/map.hpp>
+#include <cslibs_indexed_storage/interface/index/index_std.hpp>
 
 #include <iostream>
 
-using namespace cslibs_clustering;
-using namespace cslibs_clustering::backend::simple;
+using namespace cslibs_indexed_storage;
+using namespace cslibs_indexed_storage::backend::simple;
 
 struct Data
 {
@@ -18,7 +18,7 @@ struct Data
     }
 };
 
-namespace cslibs_clustering
+namespace cslibs_indexed_storage
 {
 template<>
 struct auto_index<Data>

@@ -1,7 +1,7 @@
-#include <cslibs_clustering/interface/data/data_merge.hpp>
-#include <cslibs_clustering_test/testing.hpp>
+#include <cslibs_indexed_storage/interface/data/data_merge.hpp>
+#include <cslibs_indexed_storage_test/testing.hpp>
 
-namespace cc = cslibs_clustering;
+namespace cc = cslibs_indexed_storage;
 
 namespace
 {
@@ -51,7 +51,7 @@ struct FreeFunctionMerge : Info
 };
 }
 
-namespace cslibs_clustering
+namespace cslibs_indexed_storage
 {
 void merge(FreeFunctionMerge& self, const FreeFunctionMerge&)
 {

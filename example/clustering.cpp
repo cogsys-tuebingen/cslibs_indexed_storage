@@ -1,11 +1,11 @@
-#include <cslibs_clustering/storage.hpp>
-#include <cslibs_clustering/backend/kdtree/kdtree.hpp>
-#include <cslibs_clustering/backend/array/array.hpp>
-#include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
-#include <cslibs_clustering/backend/simple/map.hpp>
-#include <cslibs_clustering/backend/simple/unordered_map.hpp>
-#include <cslibs_clustering/interface/index/index_std.hpp>
-#include <cslibs_clustering/operations/clustering.hpp>
+#include <cslibs_indexed_storage/storage.hpp>
+#include <cslibs_indexed_storage/backend/kdtree/kdtree.hpp>
+#include <cslibs_indexed_storage/backend/array/array.hpp>
+#include <cslibs_indexed_storage/backend/simple/unordered_component_map.hpp>
+#include <cslibs_indexed_storage/backend/simple/map.hpp>
+#include <cslibs_indexed_storage/backend/simple/unordered_map.hpp>
+#include <cslibs_indexed_storage/interface/index/index_std.hpp>
+#include <cslibs_indexed_storage/operations/clustering.hpp>
 
 #include <vector>
 #include <iostream>
@@ -13,9 +13,9 @@
 #include <map>
 
 
-using namespace cslibs_clustering;
-using namespace cslibs_clustering::backend;
-using namespace cslibs_clustering::operations;
+using namespace cslibs_indexed_storage;
+using namespace cslibs_indexed_storage::backend;
+using namespace cslibs_indexed_storage::operations;
 
 namespace
 {

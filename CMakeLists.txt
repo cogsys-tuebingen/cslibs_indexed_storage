@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(cslibs_clustering)
+project(cslibs_indexed_storage)
 
 include(cmake/ForceCpp11.cmake)
 include(cmake/EnableWarnings.cmake)

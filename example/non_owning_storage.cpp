@@ -1,14 +1,14 @@
-#include <cslibs_clustering/storage/auto_index_storage.hpp>
-#include <cslibs_clustering/backend/array/array.hpp>
-#include <cslibs_clustering/backend/kdtree/kdtree.hpp>
-#include <cslibs_clustering/interface/index/index_std.hpp>
+#include <cslibs_indexed_storage/storage/auto_index_storage.hpp>
+#include <cslibs_indexed_storage/backend/array/array.hpp>
+#include <cslibs_indexed_storage/backend/kdtree/kdtree.hpp>
+#include <cslibs_indexed_storage/interface/index/index_std.hpp>
 
 #include <iostream>
-#include <cslibs_clustering/storage.hpp>
+#include <cslibs_indexed_storage/storage.hpp>
 
-using namespace cslibs_clustering;
-using namespace cslibs_clustering::backend::array;
-using namespace cslibs_clustering::backend::kdtree;
+using namespace cslibs_indexed_storage;
+using namespace cslibs_indexed_storage::backend::array;
+using namespace cslibs_indexed_storage::backend::kdtree;
 
 struct Data
 {
@@ -23,7 +23,7 @@ struct Data
 
 using Index = std::array<int, 2>;
 
-namespace cslibs_clustering
+namespace cslibs_indexed_storage
 {
 template<>
 struct auto_index<Data>

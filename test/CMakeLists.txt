@@ -9,7 +9,7 @@ macro(build_test_exe name)
   target_include_directories(test_${name}
     PUBLIC
     ${GTEST_INCLUDE_DIRS}
-    ${cslibs_clustering_INCLUDR_DIR}
+    ${cslibs_indexed_storage_INCLUDR_DIR}
     ${Boost_INCLUDR_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )

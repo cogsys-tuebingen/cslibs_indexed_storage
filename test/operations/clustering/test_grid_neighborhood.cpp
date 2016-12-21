@@ -1,7 +1,7 @@
-#include <cslibs_clustering/operations/clustering/grid_neighborhood.hpp>
-#include <cslibs_clustering_test/testing.hpp>
+#include <cslibs_indexed_storage/operations/clustering/grid_neighborhood.hpp>
+#include <cslibs_indexed_storage_test/testing.hpp>
 
-namespace cc = cslibs_clustering::operations::clustering;
+namespace cc = cslibs_indexed_storage::operations::clustering;
 
 TEST(ClusteringGridNeighborhoodTest, Dummy)
 {

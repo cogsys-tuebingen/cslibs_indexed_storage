@@ -2,7 +2,7 @@ macro(add_example name)
   add_executable(${name} ${ARGN})
   target_include_directories(${name}
     PUBLIC
-    ${cslibs_clustering_INCLUDR_DIR}
+    ${cslibs_indexed_storage_INCLUDR_DIR}
     ${Boost_INCLUDR_DIRS}
     )
 endmacro()

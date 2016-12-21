@@ -1,7 +1,7 @@
-#include <cslibs_clustering/interface/index/index_interface.hpp>
-#include <cslibs_clustering_test/testing.hpp>
+#include <cslibs_indexed_storage/interface/index/index_interface.hpp>
+#include <cslibs_indexed_storage_test/testing.hpp>
 
-namespace cc = cslibs_clustering;
+namespace cc = cslibs_indexed_storage;
 
 
 template<typename T>

@@ -1,16 +1,16 @@
 #include "testdata.hpp"
 #include "timing.hpp"
 
-#include <cslibs_clustering/storage.hpp>
-#include <cslibs_clustering/backend/kdtree/kdtree.hpp>
-#include <cslibs_clustering/backend/array/array.hpp>
-#include <cslibs_clustering/backend/simple/unordered_component_map.hpp>
-#include <cslibs_clustering/interface/index/index_std.hpp>
-#include <cslibs_clustering/operations/clustering.hpp>
+#include <cslibs_indexed_storage/storage.hpp>
+#include <cslibs_indexed_storage/backend/kdtree/kdtree.hpp>
+#include <cslibs_indexed_storage/backend/array/array.hpp>
+#include <cslibs_indexed_storage/backend/simple/unordered_component_map.hpp>
+#include <cslibs_indexed_storage/interface/index/index_std.hpp>
+#include <cslibs_indexed_storage/operations/clustering.hpp>
 
 #include <map>
 
-namespace cc = cslibs_clustering;
+namespace cc = cslibs_indexed_storage;
 
 namespace tests
 {
