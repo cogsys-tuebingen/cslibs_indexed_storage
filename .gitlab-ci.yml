@@ -25,19 +25,19 @@ indigo:
   stage: build
   image: ros:indigo
   script:
-    - cmake 
+    - cmake .
     - make
 
 jade:
   stage: build
   image: ros:jade
   script:
-    - cmake 
+    - cmake .
     - make
 
 kinetic:
   stage: build
   image: ros:kinetic
   script:
-    - cmake 
+    - cmake .
     - make
