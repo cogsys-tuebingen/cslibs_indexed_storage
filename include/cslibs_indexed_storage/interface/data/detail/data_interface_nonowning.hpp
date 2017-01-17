@@ -25,11 +25,17 @@ struct nonowning_data_merger<type, option::MergeStrategy::REPLACE>
 template<typename type>
 struct nonowning_data_merger<type, option::MergeStrategy::MERGE>
 {
-    template<typename... Args>
     static constexpr inline void apply(type& self, type other)
     {
         using ::cslibs_indexed_storage::merge;
         merge(*self, *other);
+    }
+
+    template<typename... Args>
+    static constexpr inline void apply(type& self, Args&&... args)
+    {
+        using ::cslibs_indexed_storage::merge;
+        merge(*self, std::forward<Args>(args)...);
     }
 };
 }

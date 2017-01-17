@@ -32,3 +32,30 @@
 
 #define ASSERT_CONTAINS(container, value) \
     ASSERT_TRUE((::std::find(container.begin(), container.end(), value) != container.end()))
+
+namespace
+{
+struct Tracker
+{
+    std::size_t default_construct = 0;
+    std::size_t copy_construct = 0;
+    std::size_t move_construct = 0;
+    std::size_t copy_assign = 0;
+    std::size_t move_assign = 0;
+
+    void migrate(const Tracker& other)
+    {
+        default_construct += other.default_construct;
+        copy_construct += other.copy_construct;
+        move_construct += other.move_construct;
+        copy_assign += other.copy_assign;
+        move_assign += other.move_assign;
+    }
+
+    Tracker() {default_construct++;}
+    Tracker(const Tracker& other) {copy_construct++; migrate(other);}
+    Tracker(Tracker&& other) {move_construct++; migrate(other);}
+    Tracker& operator=(const Tracker& other) {copy_assign++;migrate(other);return *this;}
+    Tracker& operator=(Tracker&& other) {move_assign++;migrate(other);return *this;}
+};
+}

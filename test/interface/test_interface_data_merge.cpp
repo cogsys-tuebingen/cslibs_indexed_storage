@@ -67,7 +67,7 @@ void merge(FreeFunctionMerge& self, int)
 }
 }
 
-TEST(InterfaceDataMerge, MemberObjectMerge)
+TEST(TestInterfaceData, mergeObjectMemberFunction)
 {
     using Data = MemberMerge;
     // copy case (non-const)
@@ -107,7 +107,7 @@ TEST(InterfaceDataMerge, MemberObjectMerge)
     }
 }
 
-TEST(InterfaceDataMerge, MemberVariadicMerge)
+TEST(TestInterfaceData, mergeMemberVariadic)
 {
     using Data = MemberMerge;
     // variadic case
@@ -120,7 +120,7 @@ TEST(InterfaceDataMerge, MemberVariadicMerge)
     }
 }
 
-TEST(InterfaceDataMerge, FreeFunctionObjectMerge)
+TEST(TestInterfaceData, mergeFreeFunctionObject)
 {
     using Data = FreeFunctionMerge;
     // copy case (non-const)
@@ -160,7 +160,7 @@ TEST(InterfaceDataMerge, FreeFunctionObjectMerge)
     }
 }
 
-TEST(InterfaceDataMerge, FreeFunctionVariadicMerge)
+TEST(TestInterfaceData, mergeFreeFunctionVariadic)
 {
     using Data = FreeFunctionMerge;
     // variadic case

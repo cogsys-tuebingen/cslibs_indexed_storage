@@ -22,14 +22,20 @@ macro(create_test name)
 endmacro()
 
 # add single logical tests
-create_test(support_stl_array support/test_support_std_array.cpp)
-create_test(support_stl_tuple support/test_support_std_tuple.cpp)
+create_test(interface_data
+  interface/test_interface_data_merge.cpp
+  interface/test_interface_data_storage_hint_default.cpp
+  interface/test_interface_data_storage_hint_dense.cpp
+  interface/test_interface_data_storage_hint_nonowning.cpp
+  )
+
+create_test(support_stl_array interface/test_index_std_array.cpp)
+create_test(support_stl_tuple interface/test_index_std_tuple.cpp)
 create_test(operations_clustering_grid_neighboorhood operations/clustering/test_grid_neighborhood.cpp)
 create_test(storage
   storage/array/*.cpp
   storage/kdtree/*.cpp
   )
-create_test(interface_data_merge interface/test_data_merge.cpp)
 
 # add "run all" target
 file(GLOB_RECURSE all_test_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)

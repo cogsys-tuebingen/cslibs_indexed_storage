@@ -21,3 +21,5 @@
 * Varidaic Merge: Should we allow a different signature that constructors?
   * May already implicitly rejected due to template instantiations
   * Explicit warning would be nicer
+* Variadic Merge: if we have to decay to temporary object creation due to merge function signature,
+  should we use data_interface::create?
