@@ -12,7 +12,7 @@ namespace backend
 namespace kdtree
 {
 
-template<template<typename> typename node_allocator_t_,
+template<template<typename> class node_allocator_t_,
         typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
 class GenericKDTree
 {
