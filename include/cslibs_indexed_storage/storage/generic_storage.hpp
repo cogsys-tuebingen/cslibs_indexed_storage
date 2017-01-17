@@ -2,6 +2,7 @@
 
 #include <cslibs_indexed_storage/interface/index/index_interface.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
+#include <cslibs_indexed_storage/helper/static_warning.hpp>
 
 namespace cslibs_indexed_storage
 {
@@ -77,7 +78,21 @@ public:
     template<typename tag, typename... Args>
     inline void set(tag, Args&&... args)
     {
-        return backend_.set(tag{}, std::forward<Args>(args)...);
+        return do_set(tag{}, backend_, std::forward<Args>(args)...);
+    }
+
+private:
+    template<typename tag, typename backend_tt, typename... Args>
+    inline auto do_set(tag, backend_tt& backend, Args&&... args) -> helper::void_t<decltype(backend.set(tag{}, std::forward<Args>(args)...))>
+    {
+        backend.set(tag{}, std::forward<Args>(args)...);
+    }
+
+    template<typename tag, typename backend_tt>
+    inline void do_set(tag unknown_tag_for_this_backend, backend_tt&, ...)
+    {
+        //! if you get here by 'warning: unused parameter ‘unknown_parameter_for_this_backend’ [-Wunused-parameter]'
+        //! this means that this parameter is not supported by the currently selected backend
     }
 
 private:
