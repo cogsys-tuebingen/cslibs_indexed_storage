@@ -11,9 +11,9 @@ namespace kdtree
 {
 
 template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
-class KDTreeBuffered : public KDTreeWithAllocator<detail::BufferedAllocator, data_interface_t_, index_interface_t_, options_ts_...>
+class KDTreeBuffered : public GenericKDTree<detail::BufferedAllocator, data_interface_t_, index_interface_t_, options_ts_...>
 {
-    using base_type = KDTreeWithAllocator<detail::BufferedAllocator, data_interface_t_, index_interface_t_, options_ts_...>;
+    using base_type = GenericKDTree<detail::BufferedAllocator, data_interface_t_, index_interface_t_, options_ts_...>;
 
 public:
     void set(option::tags::node_allocator_chunk_size, std::size_t chunk_size)

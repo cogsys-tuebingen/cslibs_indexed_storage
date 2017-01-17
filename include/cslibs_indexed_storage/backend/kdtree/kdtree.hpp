@@ -11,7 +11,7 @@ namespace kdtree
 {
 
 template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
-using KDTree = KDTreeWithAllocator<detail::OnDemandAllocator, data_interface_t_, index_interface_t_, options_ts_...>;
+using KDTree = GenericKDTree<detail::OnDemandAllocator, data_interface_t_, index_interface_t_, options_ts_...>;
 
 }
 }

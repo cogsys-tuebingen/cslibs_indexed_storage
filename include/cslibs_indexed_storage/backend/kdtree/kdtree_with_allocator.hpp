@@ -14,7 +14,7 @@ namespace kdtree
 
 template<template<typename> typename node_allocator_t_,
         typename data_interface_t_, typename index_interface_t_, typename... options_ts_>
-class KDTreeWithAllocator
+class GenericKDTree
 {
 public:
     using data_if = data_interface_t_;
@@ -75,8 +75,9 @@ protected:
         {
             // left, right are cleared during deallocation
             // split_value, split_dimension are irrelevant
-            index = {};
-            data = {};
+            index = index_t();
+            //!\todo data should only be cleared when really desired by user, to avoid unneccessary operations
+            data = data_storage_t();
         }
 
         Node* left = nullptr;
@@ -91,7 +92,7 @@ protected:
     using node_allocator_t = node_allocator_t_<Node>;
 
 public:
-    ~KDTreeWithAllocator()
+    ~GenericKDTree()
     {
         clear();
     }
