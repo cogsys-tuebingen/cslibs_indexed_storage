@@ -9,6 +9,7 @@ namespace option
 namespace tags
 {
 struct split_index_type {};
+struct node_allocator_chunk_size {};
 }
 
 template<typename split_index_type_>

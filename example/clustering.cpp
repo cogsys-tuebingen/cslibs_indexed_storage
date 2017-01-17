@@ -1,5 +1,6 @@
 #include <cslibs_indexed_storage/storage.hpp>
 #include <cslibs_indexed_storage/backend/kdtree/kdtree.hpp>
+#include <cslibs_indexed_storage/backend/kdtree/kdtree_buffered.hpp>
 #include <cslibs_indexed_storage/backend/array/array.hpp>
 #include <cslibs_indexed_storage/backend/simple/unordered_component_map.hpp>
 #include <cslibs_indexed_storage/backend/simple/map.hpp>
@@ -103,7 +104,8 @@ struct hash<Index>
 
 int main()
 {
-    using StorageType = Storage<Data, Index, kdtree::KDTree>;
+//    using StorageType = Storage<Data, Index, kdtree::KDTree>;
+    using StorageType = Storage<Data, Index, kdtree::KDTreeBuffered>;
 //    using StorageType = Storage<Data, Index, simple::UnorderedComponentMap>;
 //    using StorageType = Storage<Data, Index, simple::Map>;
 //    using StorageType = Storage<Data, Index, simple::UnorderedMap>;
@@ -111,55 +113,60 @@ int main()
 
     // generate some test data
     StorageType storage;
+    storage.set<option::tags::node_allocator_chunk_size>(1);
+    for (std::size_t c = 0; c < 10; ++c)
     {
-        int i = 0;
-
-        // 3 points at (0, 0)
-        storage.insert({0, 0}, i++);
-        storage.insert({0, 0}, i++);
-        storage.insert({0, 0}, i++);
-
-        // 2 points at (0, 1), should be joined to (0,0)
-        storage.insert({0, 1}, i++);
-        storage.insert({0, 1}, i++);
-
-        // 3 points at (2, 0), should be separted
-        storage.insert({2, 0}, i++);
-        storage.insert({2, 0}, i++);
-        storage.insert({2, 0}, i++);
-
-        // 1 point at (3, -1), should be joined to (2, 0)
-        storage.insert({3, -1}, i++);
-    }
-
-    // do the actual clustering
-    ClusterOp clusters;
-    {
-        clustering::Clustering<StorageType> clusterer(storage);
-        clusterer.cluster(clusters);
-    }
-
-    // print clustering results
-    {
-        std::cout << "Clusters Found: " << clusters.current_cluster + 1 << std::endl;
-
-        // this map may be also generated in ClusterOp during start(...) and extend(...)
-        std::map<int, std::vector<int>> cluster_indices;
-        storage.traverse([&cluster_indices](const Index& index, const Data& data)
-                         {
-                             std::cout << "Entry at (" << index[0] << ", " << index[1] << "): indices = ";
-                             std::copy(data.indices.begin(), data.indices.end(), std::ostream_iterator<int>(std::cout, ", "));
-                             std::cout << " cluster = " << data.cluster << std::endl;
-
-                             auto& cluster_idxs = cluster_indices[data.cluster];
-                             cluster_idxs.insert(cluster_idxs.end(), data.indices.begin(), data.indices.end());
-                         });
-
-        for (const auto& entry : cluster_indices)
+        storage.clear();
         {
-            std::cout << "Cluster: index = " << entry.first << ", indices = ";
-            std::copy(entry.second.begin(), entry.second.end(), std::ostream_iterator<int>(std::cout, ", "));
-            std::cout << std::endl;
+            int i = 0;
+
+            // 3 points at (0, 0)
+            storage.insert({ 0, 0 }, i++);
+            storage.insert({ 0, 0 }, i++);
+            storage.insert({ 0, 0 }, i++);
+
+            // 2 points at (0, 1), should be joined to (0,0)
+            storage.insert({ 0, 1 }, i++);
+            storage.insert({ 0, 1 }, i++);
+
+            // 3 points at (2, 0), should be separted
+            storage.insert({ 2, 0 }, i++);
+            storage.insert({ 2, 0 }, i++);
+            storage.insert({ 2, 0 }, i++);
+
+            // 1 point at (3, -1), should be joined to (2, 0)
+            storage.insert({ 3, -1 }, i++);
+        }
+
+        // do the actual clustering
+        ClusterOp clusters;
+        {
+            clustering::Clustering<StorageType> clusterer(storage);
+            clusterer.cluster(clusters);
+        }
+
+        // print clustering results
+        {
+            std::cout << "Clusters Found: " << clusters.current_cluster + 1 << std::endl;
+
+            // this map may be also generated in ClusterOp during start(...) and extend(...)
+            std::map<int, std::vector<int>> cluster_indices;
+            storage.traverse([&cluster_indices](const Index& index, const Data& data)
+                             {
+                                 std::cout << "Entry at (" << index[0] << ", " << index[1] << "): indices = ";
+                                 std::copy(data.indices.begin(), data.indices.end(), std::ostream_iterator<int>(std::cout, ", "));
+                                 std::cout << " cluster = " << data.cluster << std::endl;
+
+                                 auto& cluster_idxs = cluster_indices[data.cluster];
+                                 cluster_idxs.insert(cluster_idxs.end(), data.indices.begin(), data.indices.end());
+                             });
+
+            for (const auto& entry : cluster_indices)
+            {
+                std::cout << "Cluster: index = " << entry.first << ", indices = ";
+                std::copy(entry.second.begin(), entry.second.end(), std::ostream_iterator<int>(std::cout, ", "));
+                std::cout << std::endl;
+            }
         }
     }
 }
