@@ -17,8 +17,12 @@ macro(build_test_exe name)
 endmacro()
 
 macro(create_test name)
-  build_test_exe(${name} ${ARGN})
-  add_test(test_${name} test_${name})
+  if (${catkin_FOUND})
+    catkin_add_gtest(test_${name} ${ARGN})
+  else()
+    build_test_exe(${name} ${ARGN})
+    add_test(test_${name} test_${name})
+  endif()
 endmacro()
 
 # add single logical tests
