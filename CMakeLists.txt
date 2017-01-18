@@ -8,11 +8,13 @@ find_package(Boost REQUIRED)              # Boost required (header only)
 find_package(Doxygen)                     # for documentation
 
 # Catkin is optional
+set(CATKIN_ENABLE_TESTING ON)
+set(CATKIN_SKIP_TESTING OFF)
 find_package(catkin QUIET)
 if (${catkin_FOUND})
   catkin_package(
     INCLUDE_DIRS include
-    DEPENDS boost
+    DEPENDS Boost
   )
 
   install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
@@ -40,6 +42,5 @@ endif()
 add_subdirectory(example)
 if (${GTEST_FOUND})
   enable_testing()
-  include_directories(${GTEST_INCLUDE_DIRS})
   add_subdirectory(test)
 endif()
