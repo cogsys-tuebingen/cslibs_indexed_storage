@@ -48,6 +48,10 @@ create_test(interface_data
   interface/test_interface_data_storage_hint_nonowning.cpp
   )
 
+create_test(backend_integration
+            backend/test_backend_integration.cpp
+  )
+
 create_test(support_stl_array interface/test_index_std_array.cpp)
 create_test(support_stl_tuple interface/test_index_std_tuple.cpp)
 create_test(operations_clustering_grid_neighboorhood operations/clustering/test_grid_neighborhood.cpp)

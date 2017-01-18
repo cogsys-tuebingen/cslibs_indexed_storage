@@ -105,6 +105,7 @@ public:
             root_ = allocator.allocate();
             root_->index = index;
             root_->data = data_if::create(std::forward<Args>(args)...);
+            ++size_;
             return data_if::expose(root_->data);
         }
         else
@@ -122,6 +123,7 @@ public:
             {
                 current = current->split(allocator.allocate(), allocator.allocate(), index);
                 current->data = data_if::create(std::forward<Args>(args)...);
+                ++size_;
             }
             else
                 data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
@@ -190,6 +192,12 @@ public:
             allocator.deallocate(root_);
         }
         allocator.reset();
+        size_ = 0;
+    }
+
+    inline std::size_t size() const
+    {
+        return size_;
     }
 
 private:
@@ -241,6 +249,7 @@ protected:
 private:
     node_allocator_t allocator;
     Node* root_ = nullptr;
+    std::size_t size_ = 0;
 };
 
 }

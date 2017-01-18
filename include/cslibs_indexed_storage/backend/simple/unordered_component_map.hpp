@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <type_traits>
+#include <algorithm>
 
 namespace cslibs_indexed_storage
 {
@@ -73,6 +74,15 @@ public:
     inline void clear()
     {
         lookup_.clear();
+    }
+
+    inline std::size_t size() const
+    {
+        return std::accumulate(lookup_.begin(), lookup_.end(), std::size_t(0),
+                               [](std::size_t before, const typename lookup_map_t::value_type& entry)
+                               {
+                                   return before + entry.second.size();
+                               });
     }
 
 private:
@@ -154,6 +164,11 @@ public:
         storage_.clear();
     }
 
+    inline std::size_t size() const
+    {
+        return storage_.size();
+    }
+
 private:
     lookup_map_t storage_;
 };
@@ -209,6 +224,11 @@ public:
     inline void clear()
     {
         storage_.clear();
+    }
+
+    inline std::size_t size() const
+    {
+        return storage_.size();
     }
 
 private:

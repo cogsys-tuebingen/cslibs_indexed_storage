@@ -3,6 +3,7 @@
 #include <cslibs_indexed_storage/interface/index/index_interface.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cslibs_indexed_storage/helper/static_warning.hpp>
+#include <limits>
 
 namespace cslibs_indexed_storage
 {
@@ -69,6 +70,16 @@ public:
         return backend_.clear();
     }
 
+    inline std::size_t size() const
+    {
+        return backend_.size();
+    }
+
+    inline std::size_t capacity() const
+    {
+        return get_capacity(backend_);
+    }
+
     template<typename tag, typename... Args>
     inline void set(Args&&... args)
     {
@@ -93,6 +104,17 @@ private:
     {
         //! if you get here by 'warning: unused parameter ‘unknown_parameter_for_this_backend’ [-Wunused-parameter]'
         //! this means that this parameter is not supported by the currently selected backend
+    }
+
+    template<typename backend_tt>
+    inline auto get_capacity(const backend_tt& backend) const -> decltype(backend.capacity())
+    {
+        return backend.capacity();
+    }
+
+    inline std::size_t get_capacity(...) const
+    {
+        return std::numeric_limits<std::size_t>::max();
     }
 
 private:

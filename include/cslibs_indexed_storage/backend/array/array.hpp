@@ -144,6 +144,16 @@ public:
         valid_.clear();
     }
 
+    inline std::size_t size() const
+    {
+        return valid_.count(); //!\todo is this a O(1) operation?
+    }
+
+    inline std::size_t capacity() const
+    {
+        return get_internal_size();
+    }
+
     template<typename... Args>
     void set(option::tags::array_size, Args&&... new_size)
     {
@@ -201,7 +211,7 @@ private:
         return index;
     }
 
-    constexpr std::size_t get_internal_size()
+    constexpr std::size_t get_internal_size() const
     {
         std::size_t size = 1;
         for (std::size_t i = 0; i < index_if::dimensions; ++i)

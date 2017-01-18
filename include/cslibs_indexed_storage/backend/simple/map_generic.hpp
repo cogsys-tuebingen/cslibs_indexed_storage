@@ -75,6 +75,11 @@ public:
         storage_.clear();
     }
 
+    inline std::size_t size() const
+    {
+        return storage_.size();
+    }
+
 private:
     map_t storage_;
 };
