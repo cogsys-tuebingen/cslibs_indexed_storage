@@ -27,7 +27,7 @@ indigo:
   script:
     - cmake .
     - make
-    - make test
+    - make test_all
 
 jade:
   stage: build
@@ -35,7 +35,7 @@ jade:
   script:
     - cmake .
     - make
-    - make test
+    - make test_all
 
 kinetic:
   stage: build
@@ -43,4 +43,4 @@ kinetic:
   script:
     - cmake .
     - make
-    - make test
+    - make test_all
