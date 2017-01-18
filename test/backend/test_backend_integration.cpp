@@ -1,31 +1,47 @@
 #include <cslibs_indexed_storage/storage.hpp>
 #include <cslibs_indexed_storage/backends.hpp>
 #include <cslibs_indexed_storage_test/testing.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/mpl/contains.hpp>
 #include <type_traits>
 
 namespace cis = cslibs_indexed_storage;
 
 namespace
 {
-struct dummy_data {};
+struct dummy_data
+{
+    dummy_data() = default;
+    dummy_data(int a, int b) : a(a), b(b) {};
+    int a;
+    int b;
+};
 using dummy_index = std::array<int, 2>;
 
 template<template<typename, typename, typename...>class backend_t>
 using storage_t = cis::Storage<dummy_data, dummy_index, backend_t,
         cis::option::merge_strategy<cis::option::MergeStrategy::REPLACE>,
         cis::option::array_size<11, 11>, cis::option::array_offset<int, -5, -5>>;
+
+template<template<typename, typename, typename...>class backend_t>
+using auto_index_storage_t = cis::AutoIndexStorage<dummy_data, backend_t,
+        cis::option::merge_strategy<cis::option::MergeStrategy::REPLACE>,
+        cis::option::array_size<11, 11>, cis::option::array_offset<int, -5, -5>>;
 }
 
-using AllBackendTypes = ::testing::Types<
-        storage_t<cis::backend::kdtree::KDTree>,
-        storage_t<cis::backend::kdtree::KDTreeBuffered>,
-        storage_t<cis::backend::array::Array>,
-        storage_t<cis::backend::simple::Map>,
-        storage_t<cis::backend::simple::UnorderedMap>,
-        storage_t<cis::backend::simple::UnorderedComponentMap>
->;
+namespace cslibs_indexed_storage
+{
+template<>
+struct auto_index<dummy_data>
+{
+    using index_t = std::array<int, 2>;
 
-using CapacityBackendTypes = storage_t<cis::backend::array::Array>;
+    inline index_t index(const dummy_data& data) const
+    {
+        return { int(data.a), int(data.b) };
+    }
+};
+}
 
 namespace std
 {
@@ -42,6 +58,29 @@ struct hash<dummy_index>
     }
 };
 }
+
+using AllTypesStorage = ::testing::Types<
+        storage_t<cis::backend::kdtree::KDTree>,
+        storage_t<cis::backend::kdtree::KDTreeBuffered>,
+        storage_t<cis::backend::array::Array>,
+        storage_t<cis::backend::simple::Map>,
+        storage_t<cis::backend::simple::UnorderedMap>,
+        storage_t<cis::backend::simple::UnorderedComponentMap>
+>;
+
+using AllTypesAutoIndexStorage = ::testing::Types<
+        auto_index_storage_t<cis::backend::kdtree::KDTree>,
+        auto_index_storage_t<cis::backend::kdtree::KDTreeBuffered>,
+        auto_index_storage_t<cis::backend::array::Array>,
+        auto_index_storage_t<cis::backend::simple::Map>,
+        auto_index_storage_t<cis::backend::simple::UnorderedMap>,
+        auto_index_storage_t<cis::backend::simple::UnorderedComponentMap>
+>;
+
+using FixedCapacityTypes = boost::mpl::vector<
+        storage_t<cis::backend::array::Array>,
+        auto_index_storage_t<cis::backend::array::Array>
+>;
 
 template<typename T>
 class TestBackendIntegration : public ::testing::Test
@@ -66,11 +105,12 @@ TYPED_TEST_P(TestBackendIntegration, size)
 TYPED_TEST_P(TestBackendIntegration, capacity)
 {
     TypeParam storage;
-    if (std::is_same<CapacityBackendTypes, TypeParam>::value)
+    if (boost::mpl::contains<FixedCapacityTypes, TypeParam>::value)
         EXPECT_EQ(storage.capacity(), std::size_t(11 * 11));
     else
         EXPECT_EQ(storage.capacity(), std::numeric_limits<std::size_t>::max());
 }
 
 REGISTER_TYPED_TEST_CASE_P(TestBackendIntegration, size, capacity);
-INSTANTIATE_TYPED_TEST_CASE_P(Common, TestBackendIntegration, AllBackendTypes);
+INSTANTIATE_TYPED_TEST_CASE_P(Storage, TestBackendIntegration, AllTypesStorage);
+INSTANTIATE_TYPED_TEST_CASE_P(AutoIndexStorage, TestBackendIntegration, AllTypesAutoIndexStorage);

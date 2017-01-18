@@ -90,7 +90,7 @@ public:
 
     inline std::size_t capacity() const
     {
-        return get_capacity(backend_);
+        return get_capacity(helper::exists{}, backend_);
     }
 
     template<typename tag, typename... Args>
@@ -120,12 +120,13 @@ private:
     }
 
     template<typename backend_tt>
-    inline auto get_capacity(const backend_tt& backend) const -> decltype(backend.capacity())
+    inline auto get_capacity(helper::exists, const backend_tt& backend) const -> decltype(backend.capacity())
     {
         return backend.capacity();
     }
 
-    inline std::size_t get_capacity(...) const
+    template<typename backend_tt>
+    inline std::size_t get_capacity(helper::fallback, const backend_tt&) const
     {
         return std::numeric_limits<std::size_t>::max();
     }

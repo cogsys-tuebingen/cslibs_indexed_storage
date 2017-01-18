@@ -3,11 +3,11 @@
 #include <cslibs_indexed_storage/interface/index/index_interface.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cslibs_indexed_storage/helper/static_warning.hpp>
+#include <cslibs_indexed_storage/helper/void_t.hpp>
 #include <limits>
 
 namespace cslibs_indexed_storage
 {
-
 /**
  * Generic wrapper type to abstract away the actual storage implementation.
  *
@@ -77,7 +77,7 @@ public:
 
     inline std::size_t capacity() const
     {
-        return get_capacity(backend_);
+        return get_capacity(helper::exists{}, backend_);
     }
 
     template<typename tag, typename... Args>
@@ -107,12 +107,13 @@ private:
     }
 
     template<typename backend_tt>
-    inline auto get_capacity(const backend_tt& backend) const -> decltype(backend.capacity())
+    inline auto get_capacity(helper::exists, const backend_tt& backend) const -> decltype(backend.capacity())
     {
         return backend.capacity();
     }
 
-    inline std::size_t get_capacity(...) const
+    template<typename backend_tt>
+    inline std::size_t get_capacity(helper::fallback, const backend_tt&) const
     {
         return std::numeric_limits<std::size_t>::max();
     }
