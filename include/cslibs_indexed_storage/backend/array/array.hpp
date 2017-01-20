@@ -141,7 +141,7 @@ public:
 
     inline void clear()
     {
-        valid_.clear();
+        valid_.reset();
     }
 
     inline std::size_t size() const

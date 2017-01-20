@@ -91,20 +91,36 @@ TYPED_TEST_CASE_P(TestBackendIntegration);
 TYPED_TEST_P(TestBackendIntegration, size)
 {
     TypeParam storage;
+
+    EXPECT_EQ(storage.size(), std::size_t(0));
+    storage.insert({1, 1});
+    EXPECT_EQ(storage.size(), std::size_t(1));
+    storage.insert({0, 1});
+    EXPECT_EQ(storage.size(), std::size_t(2));
+
+    // duplicate index should not increase size
+    storage.insert({0, 0});
+    EXPECT_EQ(storage.size(), std::size_t(3));
+    storage.insert({0, 0});
+    EXPECT_EQ(storage.size(), std::size_t(3));
+
+
+    storage.clear();
     EXPECT_EQ(storage.size(), std::size_t(0));
     storage.insert({0, 0});
     EXPECT_EQ(storage.size(), std::size_t(1));
-    storage.insert({0, 0});
-    EXPECT_EQ(storage.size(), std::size_t(1));
-    storage.insert({1, 1});
-    EXPECT_EQ(storage.size(), std::size_t(2));
-    storage.insert({0, 1});
-    EXPECT_EQ(storage.size(), std::size_t(3));
 }
 
 TYPED_TEST_P(TestBackendIntegration, capacity)
 {
     TypeParam storage;
+    if (boost::mpl::contains<FixedCapacityTypes, TypeParam>::value)
+        EXPECT_EQ(storage.capacity(), std::size_t(11 * 11));
+    else
+        EXPECT_EQ(storage.capacity(), std::numeric_limits<std::size_t>::max());
+
+    // capacity should remain unchanged on clear
+    storage.clear();
     if (boost::mpl::contains<FixedCapacityTypes, TypeParam>::value)
         EXPECT_EQ(storage.capacity(), std::size_t(11 * 11));
     else
