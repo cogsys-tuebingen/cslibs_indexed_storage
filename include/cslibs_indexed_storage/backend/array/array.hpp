@@ -3,16 +3,14 @@
 #include <cslibs_indexed_storage/backend/options.hpp>
 #include <cslibs_indexed_storage/backend/array/array_options.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
+#include <cslibs_indexed_storage/backend/tags.hpp>
+#include <cslibs_indexed_storage/backend/backend_traits.hpp>
+#include <cslibs_indexed_storage/helper/index_sequence.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
-#include <cslibs_indexed_storage/helper/index_sequence.hpp>
 
-namespace cslibs_indexed_storage
-{
-namespace backend
-{
-namespace array
+namespace cslibs_indexed_storage { namespace backend { namespace array
 {
 
 namespace detail
@@ -34,6 +32,8 @@ template<typename data_interface_t_, typename index_interface_t_, typename... op
 class Array
 {
 public:
+    using tag = array_tag;
+
     using data_if = data_interface_t_;
     using data_storage_t = typename data_if::storage_type;
     using data_output_t = typename data_if::output_type;
@@ -228,6 +228,15 @@ private:
     boost::dynamic_bitset<uint64_t> valid_ = boost::dynamic_bitset<uint64_t>(get_internal_size());
 };
 
-}
-}
-}
+}}}
+
+namespace cslibs_indexed_storage { namespace backend
+{
+
+template<>
+struct backend_traits<array_tag>
+{
+    static constexpr bool IsFixedSize = true;
+};
+
+}}

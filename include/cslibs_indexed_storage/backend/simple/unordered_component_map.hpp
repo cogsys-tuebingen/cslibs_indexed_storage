@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cslibs_indexed_storage/backend/tags.hpp>
+#include <cslibs_indexed_storage/backend/backend_traits.hpp>
 #include <cslibs_indexed_storage/helper/static_warning.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cstdint>
@@ -7,11 +9,7 @@
 #include <type_traits>
 #include <algorithm>
 
-namespace cslibs_indexed_storage
-{
-namespace backend
-{
-namespace simple
+namespace cslibs_indexed_storage { namespace backend { namespace simple
 {
 namespace detail
 {
@@ -179,6 +177,8 @@ template<typename data_interface_t_, typename index_interface_t_, typename... op
 class UnorderedComponentMap
 {
 public:
+    using tag = component_map_tag;
+
     using data_if = data_interface_t_;
     using data_output_t = typename data_if::output_type;
     using index_if = index_interface_t_;
@@ -235,5 +235,15 @@ private:
     storage_t storage_;
 };
 
-}
+}}}
+
+namespace cslibs_indexed_storage { namespace backend
+{
+
+template<>
+struct backend_traits<component_map_tag>
+{
+    static constexpr bool IsFixedSize = false;
+};
+
 }}

@@ -31,6 +31,7 @@ public:
     using index_t = typename index_if::type;
 
     using backend_t = backend_t_<data_if, index_if, args_t_...>;
+    using backend_tag = typename backend_t::tag;
 
     template<typename... Args>
     inline data_output_t& insert(const index_t& index, Args&& ... data)

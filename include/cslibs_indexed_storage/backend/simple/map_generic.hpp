@@ -1,20 +1,20 @@
 #pragma once
 
+#include <cslibs_indexed_storage/backend/tags.hpp>
+#include <cslibs_indexed_storage/backend/backend_traits.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cstdint>
 #include <type_traits>
 
-namespace cslibs_indexed_storage
-{
-namespace backend
-{
-namespace simple
+namespace cslibs_indexed_storage { namespace backend { namespace simple
 {
 
 template<typename map_t, typename data_interface_t_, typename index_if_, typename... options_ts_>
 class MapGeneric
 {
 public:
+    using tag = map_tag;
+
     using data_if = data_interface_t_;
     using data_output_t = typename data_if::output_type;
     using index_if = index_if_;
@@ -84,5 +84,15 @@ private:
     map_t storage_;
 };
 
-}
+}}}
+
+namespace cslibs_indexed_storage { namespace backend
+{
+
+template<>
+struct backend_traits<map_tag>
+{
+    static constexpr bool IsFixedSize = false;
+};
+
 }}

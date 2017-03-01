@@ -2,14 +2,12 @@
 
 #include <cslibs_indexed_storage/backend/options.hpp>
 #include <cslibs_indexed_storage/backend/kdtree/kdtree_options.hpp>
+#include <cslibs_indexed_storage/backend/tags.hpp>
+#include <cslibs_indexed_storage/backend/backend_traits.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <limits>
 
-namespace cslibs_indexed_storage
-{
-namespace backend
-{
-namespace kdtree
+namespace cslibs_indexed_storage { namespace backend { namespace kdtree
 {
 
 template<template<typename> class node_allocator_t_,
@@ -17,6 +15,8 @@ template<template<typename> class node_allocator_t_,
 class GenericKDTree
 {
 public:
+    using tag = kdtree_tag;
+
     using data_if = data_interface_t_;
     using data_storage_t = typename data_if::storage_type;
     using data_output_t = typename data_if::output_type;
@@ -252,6 +252,15 @@ private:
     std::size_t size_ = 0;
 };
 
-}
-}
-}
+}}}
+
+namespace cslibs_indexed_storage { namespace backend
+{
+
+template<>
+struct backend_traits<kdtree_tag>
+{
+    static constexpr bool IsFixedSize = false;
+};
+
+}}
