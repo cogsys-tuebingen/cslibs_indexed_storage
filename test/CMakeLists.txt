@@ -2,7 +2,12 @@
 file(GLOB_RECURSE include_files ${CMAKE_CURRENT_SOURCE_DIR}/include/*)
 add_custom_target(show_${PROJECT_NAME}_test_headers_in_ide SOURCES ${include_files})
 
-# add single logical tests
+# test utility
+create_test(test_utilities
+            utility/test_concept_check.cpp
+            utility/test_index_sequence.cpp
+            utility/test_void_t.cpp)
+
 create_test(test_interface_data
             interface/test_interface_data_merge.cpp
             interface/test_interface_data_storage_hint_default.cpp

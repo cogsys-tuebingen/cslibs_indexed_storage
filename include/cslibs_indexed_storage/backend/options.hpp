@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cslibs_indexed_storage/helper/void_t.hpp>
-#include <cslibs_indexed_storage/helper/options.hpp>
+#include <cslibs_indexed_storage/utility/void_t.hpp>
+#include <cslibs_indexed_storage/utility/options.hpp>
 
 namespace cslibs_indexed_storage {
 namespace option {

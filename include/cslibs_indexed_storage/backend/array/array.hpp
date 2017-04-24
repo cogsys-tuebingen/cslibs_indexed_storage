@@ -5,7 +5,7 @@
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cslibs_indexed_storage/backend/tags.hpp>
 #include <cslibs_indexed_storage/backend/backend_traits.hpp>
-#include <cslibs_indexed_storage/helper/index_sequence.hpp>
+#include <cslibs_indexed_storage/utility/index_sequence.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <limits>
 #include <memory>
@@ -19,13 +19,13 @@ template<typename T, typename TT>
 struct empty_array_maker;
 
 template<typename T, std::size_t... idx>
-struct empty_array_maker<T, helper::index_sequence<idx...>>
+struct empty_array_maker<T, utility::index_sequence<idx...>>
 {
     using type = option::detail::value_holder<typename T::value_type, ((void) idx, 0)...>;
 };
 
 template<typename T, std::size_t count>
-using empty_array = typename empty_array_maker<T, typename helper::make_index_sequence<count>::type>::type;
+using empty_array = typename empty_array_maker<T, typename utility::make_index_sequence<count>::type>::type;
 }
 
 template<typename data_interface_t_, typename index_interface_t_, typename... options_ts_>

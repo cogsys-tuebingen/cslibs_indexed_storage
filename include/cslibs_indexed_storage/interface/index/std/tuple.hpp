@@ -36,12 +36,12 @@ struct index_interface<std::tuple<Types...>>
     {
         using other_if = index_interface<other_t>;
         static_assert(other_if::dimensions == dimensions, "dimensions not equal");
-        return add_helper(a, b, helper::make_index_sequence<dimensions>{});
+        return add_helper(a, b, utility::make_index_sequence<dimensions>{});
     }
 
 private:
     template<typename other_t, std::size_t... i>
-    static inline constexpr type add_helper(const type& a, const other_t& b, helper::index_sequence<i...>)
+    static inline constexpr type add_helper(const type& a, const other_t& b, utility::index_sequence<i...>)
     {
         return std::make_tuple(((void)i, static_cast<typename dimension<i>::value_type>(dimension<i>::access(a) + index_interface<other_t>::template dimension<i>::access(b)))...);
     }

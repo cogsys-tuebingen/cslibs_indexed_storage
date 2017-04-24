@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cslibs_indexed_storage/helper/index_sequence.hpp>
+#include <cslibs_indexed_storage/utility/index_sequence.hpp>
 #include <boost/integer.hpp>
 #include <array>
 #include <valarray>
@@ -18,9 +18,9 @@ namespace detail
 template <typename Seq1, std::size_t Offset, typename Seq2> struct concat_seq;
 
 template <std::size_t ... Is1, std::size_t Offset, std::size_t ... Is2>
-struct concat_seq<helper::index_sequence<Is1...>, Offset, helper::index_sequence<Is2...>>
+struct concat_seq<utility::index_sequence<Is1...>, Offset, utility::index_sequence<Is2...>>
 {
-    using type = helper::index_sequence<Is1..., (Offset + Is2)...>;
+    using type = utility::index_sequence<Is1..., (Offset + Is2)...>;
 };
 
 template<typename T>
@@ -36,7 +36,7 @@ constexpr T get_bit(std::size_t base, std::size_t bit, std::size_t value)
 }
 
 template<typename offset_t, std::size_t... breaks>
-constexpr offset_t generate_offset(std::size_t base, std::size_t counter, helper::index_sequence<breaks...>)
+constexpr offset_t generate_offset(std::size_t base, std::size_t counter, utility::index_sequence<breaks...>)
 {
     using value_type = typename offset_t::value_type;
     return {value_type(get_bit<value_type>(base, breaks, counter) - base / 2)...};
@@ -45,11 +45,11 @@ constexpr offset_t generate_offset(std::size_t base, std::size_t counter, helper
 template<typename offset_t>
 constexpr offset_t generate_offset(std::size_t base, std::size_t counter)
 {
-    return generate_offset<offset_t>(base, counter, helper::make_index_sequence<std::tuple_size<offset_t>::value>{});
+    return generate_offset<offset_t>(base, counter, utility::make_index_sequence<std::tuple_size<offset_t>::value>{});
 }
 
 template<typename list_t, std::size_t... counter>
-constexpr list_t generate_all(std::size_t base, helper::index_sequence<counter...>)
+constexpr list_t generate_all(std::size_t base, utility::index_sequence<counter...>)
 {
     return {generate_offset<typename list_t::value_type>(base, counter)...};
 };
@@ -60,11 +60,11 @@ constexpr list_t generate(std::size_t base, bool skip_self)
     return skip_self ?
            generate_all<list_t>(base,
                                 typename concat_seq<
-                                        typename helper::make_index_sequence<skip>::type,
+                                        typename utility::make_index_sequence<skip>::type,
                                         skip + 1,
-                                        typename helper::make_index_sequence<std::tuple_size<list_t>::value - skip>::type
+                                        typename utility::make_index_sequence<std::tuple_size<list_t>::value - skip>::type
                                 >::type{}) :
-           generate_all<list_t>(base, helper::make_index_sequence<std::tuple_size<list_t>::value>{});
+           generate_all<list_t>(base, utility::make_index_sequence<std::tuple_size<list_t>::value>{});
 }
 
 //! \todo can be increased when unsing a log2 approach in make_index_sequence

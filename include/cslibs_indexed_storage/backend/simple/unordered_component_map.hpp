@@ -2,7 +2,6 @@
 
 #include <cslibs_indexed_storage/backend/tags.hpp>
 #include <cslibs_indexed_storage/backend/backend_traits.hpp>
-#include <cslibs_indexed_storage/helper/static_warning.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
 #include <cstdint>
 #include <unordered_map>

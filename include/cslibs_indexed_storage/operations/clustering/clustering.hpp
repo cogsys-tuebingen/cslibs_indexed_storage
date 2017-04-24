@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cslibs_indexed_storage/helper/void_t.hpp>
+#include <cslibs_indexed_storage/utility/void_t.hpp>
 #include <cslibs_indexed_storage/operations/clustering/cluster_op_traits.hpp>
 
 namespace cslibs_indexed_storage
