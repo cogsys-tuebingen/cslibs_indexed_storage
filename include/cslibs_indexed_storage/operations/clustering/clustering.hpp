@@ -10,7 +10,6 @@ namespace operations
 namespace clustering
 {
 
-
 template<typename storage_t_>
 class Clustering
 {
@@ -45,7 +44,7 @@ private:
                                     //! \todo can be replaced by auto in lambda with c++14, cannot use member function and std::bind due to performance reasons :/
                                     [this, &center, &cluster_op](const typename traits::visitor_index_t& offset)
                                     {
-                                        auto index = index_if::add(center, offset);
+                                        auto index = do_add(helper::exists{}, cluster_op, center, offset);
                                         auto neighbour = storage_.get(index);
                                         if (!neighbour)
                                             return;
@@ -55,6 +54,20 @@ private:
 
                                         cluster(cluster_op, index);
                                     });
+    }
+
+    template<typename cluster_op_t, typename offset_t>
+    auto do_add(helper::exists, const cluster_op_t& cluster_op, const index_t& index, const offset_t& offset)
+            -> decltype(cluster_op.add(index, offset))
+    {
+        return cluster_op.add(index, offset);
+    }
+
+    template<typename cluster_op_t, typename offset_t>
+    auto do_add(helper::fallback, const cluster_op_t&, const index_t& index, const offset_t& offset)
+        -> decltype(index_if::add(index, offset))
+    {
+        return index_if::add(index, offset);
     }
 
 private:

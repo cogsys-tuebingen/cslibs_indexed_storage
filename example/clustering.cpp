@@ -80,6 +80,12 @@ struct ClusterOp
         neighborhood.visit(visitior);
     }
 
+    template<typename offset_t>
+    Index add(const Index& a, const offset_t& b) const
+    {
+        return {a[0] + b[0], a[1] + b[1]};
+    }
+
     int current_cluster = -1;   //!< keep track of the current cluster index
 };
 
