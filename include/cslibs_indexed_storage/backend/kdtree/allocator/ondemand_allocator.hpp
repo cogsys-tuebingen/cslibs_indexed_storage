@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cslibs_indexed_storage/interface/data/align/aligned_allocator.hpp>
+
 namespace cslibs_indexed_storage
 {
 namespace backend
@@ -16,18 +18,21 @@ class OnDemandAllocator
 public:
     inline Node* allocate()
     {
-        return new Node();
+        return allocator_.allocate(1);
     }
 
     inline void deallocate(Node*& node)
     {
-        delete node;
+        allocator_.deallocate(node, 1);
         node = nullptr;
     }
 
     inline void clear() {}
 
     inline void reset() {}
+
+private:
+    interface::aligned_allocator<Node> allocator_;
 };
 
 }

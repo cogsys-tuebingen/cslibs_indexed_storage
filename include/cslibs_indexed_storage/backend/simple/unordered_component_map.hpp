@@ -3,6 +3,7 @@
 #include <cslibs_indexed_storage/backend/tags.hpp>
 #include <cslibs_indexed_storage/backend/backend_traits.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
+#include <cslibs_indexed_storage/interface/data/align/aligned_allocator.hpp>
 #include <cstdint>
 #include <unordered_map>
 #include <type_traits>
@@ -99,7 +100,11 @@ public:
     using index_accessor_t = typename index_if::template dimension<last_index>;
     using index_element_t = typename index_accessor_t::value_type;
 private:
-    using lookup_map_t = std::unordered_map<index_element_t, data_storage_t>;
+    using lookup_map_t = std::unordered_map<index_element_t,
+                                            data_storage_t,
+                                            std::hash<index_element_t>,
+                                            std::equal_to<index_element_t>,
+                                            interface::aligned_allocator<std::pair<const index_element_t, data_storage_t>>>;
 
 public:
     template<typename... Args>

@@ -3,6 +3,7 @@
 #include <cslibs_indexed_storage/backend/options.hpp>
 #include <cslibs_indexed_storage/backend/array/array_options.hpp>
 #include <cslibs_indexed_storage/interface/data/data_interface.hpp>
+#include <cslibs_indexed_storage/interface/data/align/aligned_array.hpp>
 #include <cslibs_indexed_storage/backend/tags.hpp>
 #include <cslibs_indexed_storage/backend/backend_traits.hpp>
 #include <cslibs_indexed_storage/utility/index_sequence.hpp>
@@ -51,12 +52,14 @@ public:
 private:
     using internal_index_t = std::size_t;
     static constexpr auto invalid_index_value = std::numeric_limits<internal_index_t>::max();
+    using internal_storage_t = interface::aligned_array<data_storage_t>;
 
 public:
-    ~Array()
-    {
-        delete[] storage_;
-    }
+    Array() :
+            size_(static_array_size),
+            offset_(static_array_offset),
+            storage_(get_internal_size())
+    {}
 
     template<typename... Args>
     inline data_output_t& insert(const index_t& index, Args&&... args)
@@ -178,8 +181,7 @@ private:
     {
         const std::size_t size = get_internal_size();
 
-        delete[] storage_;
-        storage_ = new data_storage_t[size];
+        storage_ = internal_storage_t(size);
 
         valid_.clear();
         valid_.resize(size);
@@ -221,10 +223,10 @@ private:
     }
 
 private:
-    array_size_t size_ = static_array_size;
-    array_offset_t offset_ = static_array_offset;
+    array_size_t size_;
+    array_offset_t offset_;
 
-    data_storage_t* storage_ = new data_storage_t[get_internal_size()];
+    internal_storage_t storage_;
     boost::dynamic_bitset<uint64_t> valid_ = boost::dynamic_bitset<uint64_t>(get_internal_size());
 };
 
