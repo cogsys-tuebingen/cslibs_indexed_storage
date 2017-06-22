@@ -7,10 +7,16 @@ namespace cslibs_indexed_storage
 namespace interface
 {
 
-template<typename T, std::size_t Alignment = alignof(T)>
+template<typename T, std::size_t RequestedAlignment = alignof(T)>
 class aligned_allocator
 {
 public:
+#if __GNUC__ >= 5
+    static constexpr std::size_t Alignment = RequestedAlignment >= alignof(std::max_align_t) ? RequestedAlignment : alignof(std::max_align_t);
+#else
+    static constexpr std::size_t Alignment = RequestedAlignment >= alignof(void*) ? RequestedAlignment : alignof(void*);
+#endif
+
     using pointer = T*;
     using const_pointer = const T*;
     using value_type = T;
@@ -24,13 +30,13 @@ public:
     template<typename U>
     struct rebind
     {
-        using other = aligned_allocator<U, Alignment>;
+        using other = aligned_allocator<U, RequestedAlignment>;
     };
 
     aligned_allocator() = default;
 
     template<typename U>
-    aligned_allocator(const aligned_allocator<U, Alignment>&) {}
+    aligned_allocator(const aligned_allocator<U, RequestedAlignment>&) {}
 
     pointer allocate(size_type num, const void* /*hint*/ = nullptr)
     {
