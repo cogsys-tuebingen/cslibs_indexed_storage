@@ -18,11 +18,14 @@ class OnDemandAllocator
 public:
     inline Node* allocate()
     {
-        return allocator_.allocate(1);
+        Node* node = allocator_.allocate(1);
+        new (node) Node();
+        return node;
     }
 
     inline void deallocate(Node*& node)
     {
+        (*node).~Node();
         allocator_.deallocate(node, 1);
         node = nullptr;
     }
