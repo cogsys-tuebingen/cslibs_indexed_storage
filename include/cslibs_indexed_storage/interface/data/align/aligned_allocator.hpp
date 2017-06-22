@@ -16,6 +16,10 @@ public:
     using value_type = T;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
+#if __GNUC__ < 5
+    using reference = T&;
+    using const_reference = const T&;
+#endif
 
     template<typename U>
     struct rebind
@@ -45,6 +49,20 @@ public:
     {
         std::free(p);
     }
+
+#if __GNUC__ < 5
+    template<typename U, typename... Args>
+    void construct(U* p, Args&&... args)
+    {
+        new ((void*) p) U(std::forward<Args>(args)...);
+    }
+
+    template<typename U>
+    void destroy(U* p)
+    {
+        (*p).~U();
+    }
+#endif
 };
 
 template<typename T1, std::size_t Align1, typename T2, std::size_t Align2>

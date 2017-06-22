@@ -1,3 +1,5 @@
+#ifndef CIS_USING_ROS_TEST
+
 #include <cslibs_indexed_storage/utility/concept_check.hpp>
 
 #include <cslibs_indexed_storage/utility/void_t.hpp>
@@ -61,3 +63,5 @@ TEST(TestConceptCheck, OverloadResolution)
         mock.test(no_feature{});
     }
 }
+
+#endif

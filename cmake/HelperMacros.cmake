@@ -32,6 +32,7 @@ macro(build_test_catkin name)
                                ${CMAKE_CURRENT_SOURCE_DIR}/include/
                                )
     target_link_libraries(${name} pthread)
+    target_compile_definitions(${name} PRIVATE -DCIS_USING_ROS_TEST)
 endmacro()
 
 macro(create_test name)

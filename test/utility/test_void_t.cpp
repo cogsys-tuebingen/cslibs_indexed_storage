@@ -1,3 +1,5 @@
+#ifndef CIS_USING_ROS_TEST
+
 #include <cslibs_indexed_storage/utility/void_t.hpp>
 
 #include <gtest/gtest.h>
@@ -55,3 +57,5 @@ TEST(TestUtilityVoidT, OverloadResolution)
         mock.test(no_feature{});
     }
 }
+
+#endif

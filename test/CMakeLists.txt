@@ -27,3 +27,6 @@ create_test(test_storage
 # add "run all" target
 file(GLOB_RECURSE all_test_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 build_test_exe(test_all ${all_test_sources})
+if (${catkin_FOUND})
+    target_compile_definitions(test_all PRIVATE -DCIS_USING_ROS_TEST)
+endif()

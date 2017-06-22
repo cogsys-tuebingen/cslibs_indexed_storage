@@ -17,3 +17,6 @@ create_example(example_test
 
 create_example(example_array
                array.cpp)
+create_example(example_eigen
+        eigen.cpp)
+target_compile_options(example_eigen PUBLIC -march=native)

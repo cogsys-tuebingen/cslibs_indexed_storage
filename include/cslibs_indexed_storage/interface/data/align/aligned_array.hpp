@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cslibs_indexed_storage/interface/data/align/aligned_allocator.hpp>
+#include <type_traits>
 
 namespace cslibs_indexed_storage
 {
@@ -23,7 +24,12 @@ void construct_array_elements_impl(std::false_type, std::size_t count, T* array)
 template<typename T>
 void construct_array_elements(std::size_t count, T* array)
 {
+    // std::is_trivially_* is not implement in gcc 4.x, so always enforce construction...
+#if __GNUC__ >= 5
     construct_array_elements_impl(std::is_trivially_default_constructible<T>{}, count, array);
+#else
+    construct_array_elements_impl(std::false_type{}, count, array);
+#endif
 }
 
 template<typename T>
