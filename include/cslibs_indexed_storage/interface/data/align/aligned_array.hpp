@@ -80,6 +80,16 @@ public:
         return elements_[index];
     }
 
+    void resize(std::size_t new_size)
+    {
+        detail::destruct_array_elements<T>(size_, elements_);
+        allocator_.deallocate(elements_, size_);
+
+        size_ = new_size;
+        elements_ = allocator_.allocate(size_);
+        detail::construct_array_elements<T>(size_, elements_);
+    }
+
 private:
     Allocator allocator_;
     std::size_t size_;

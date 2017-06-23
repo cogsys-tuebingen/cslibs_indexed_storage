@@ -181,7 +181,7 @@ private:
     {
         const std::size_t size = get_internal_size();
 
-        storage_ = internal_storage_t(size);
+        storage_.resize(size);
 
         valid_.clear();
         valid_.resize(size);
