@@ -91,7 +91,7 @@ public:
 
     inline std::size_t capacity() const
     {
-        return get_capacity(helper::exists{}, backend_);
+        return get_capacity(utility::check_feature_exists{}, backend_);
     }
 
     template<typename tag, typename... Args>
@@ -108,7 +108,7 @@ public:
 
 private:
     template<typename tag, typename backend_tt, typename... Args>
-    inline auto do_set(tag, backend_tt& backend, Args&&... args) -> helper::void_t<decltype(backend.set(tag{}, std::forward<Args>(args)...))>
+    inline auto do_set(tag, backend_tt& backend, Args&&... args) -> utility::void_t<decltype(backend.set(tag{}, std::forward<Args>(args)...))>
     {
         backend.set(tag{}, std::forward<Args>(args)...);
     }
@@ -121,13 +121,13 @@ private:
     }
 
     template<typename backend_tt>
-    inline auto get_capacity(helper::exists, const backend_tt& backend) const -> decltype(backend.capacity())
+    inline auto get_capacity(utility::feature_exists_tag, const backend_tt& backend) const -> decltype(backend.capacity())
     {
         return backend.capacity();
     }
 
     template<typename backend_tt>
-    inline std::size_t get_capacity(helper::fallback, const backend_tt&) const
+    inline std::size_t get_capacity(utility::feature_missing_tag, const backend_tt&) const
     {
         return std::numeric_limits<std::size_t>::max();
     }

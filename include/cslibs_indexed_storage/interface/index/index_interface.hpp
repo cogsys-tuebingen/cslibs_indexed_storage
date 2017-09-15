@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <tuple>
-#include <cslibs_indexed_storage/helper/index_sequence.hpp>
+#include <cslibs_indexed_storage/utility/index_sequence.hpp>
 
 namespace cslibs_indexed_storage
 {
@@ -43,7 +43,7 @@ public:
     {
         using other_if = index_interface<other_t>;
         static_assert(other_if::dimensions == base::dimensions, "dimensions not equal");
-        return add_helper(a, b, helper::make_index_sequence<base::dimensions>{});
+        return add_helper(a, b, utility::make_index_sequence<base::dimensions>{});
 
 //        type r;
 //        for (std::size_t i = 0; i < base::dimensions; ++i)
@@ -53,7 +53,7 @@ public:
 
 private:
     template<typename other_t, std::size_t... i>
-    static inline constexpr type add_helper(const type& a, const other_t& b, helper::index_sequence<i...>)
+    static inline constexpr type add_helper(const type& a, const other_t& b, utility::index_sequence<i...>)
     {
         return {((void)i, static_cast<typename dimension<i>::value_type>(dimension<i>::access(a) + index_interface<other_t>::template dimension<i>::access(b)))...};
     }

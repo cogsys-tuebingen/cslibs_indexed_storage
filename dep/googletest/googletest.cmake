@@ -24,7 +24,7 @@ add_subdirectory(
   ${CMAKE_BINARY_DIR}/googletest-build)
 
 set(GTEST_FOUND TRUE)
-set(GTEST_INCLUDE_DIRS ${gtest_SOURCE_DIR}/include/)
-set(GTEST_LIBRARIES gtest)
-set(GTEST_MAIN_LIBRARIES gtest_main)
-set(GTEST_BOTH_LIBRARIES gtest gtest_main)
+set(GTEST_INCLUDE_DIRS ${gtest_SOURCE_DIR}/include/ ${gmock_SOURCE_DIR})
+set(GTEST_LIBRARIES gtest gmock)
+set(GTEST_MAIN_LIBRARIES gmock_main)
+set(GTEST_BOTH_LIBRARIES gtest gmock gmock_main)

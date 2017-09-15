@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cslibs_indexed_storage/interface/data/align/aligned_allocator.hpp>
 
 namespace cslibs_indexed_storage
 {
@@ -13,7 +14,7 @@ namespace detail
 template<class Node>
 struct BufferedAllocator
 {
-    using chunk_t = std::vector<Node>;
+    using chunk_t = std::vector<Node, interface::aligned_allocator<Node>>;
     using chunk_list_t = std::vector<chunk_t>;
     static constexpr std::size_t DEFAULT_CHUNK_SIZE = 4096;
 
