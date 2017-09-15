@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cslibs_indexed_storage/utility/void_t.hpp>
+#include <cslibs_indexed_storage/utility/concept_check.hpp>
 #include <cslibs_indexed_storage/operations/clustering/cluster_op_traits.hpp>
 
 namespace cslibs_indexed_storage
@@ -44,7 +45,7 @@ private:
                                     //! \todo can be replaced by auto in lambda with c++14, cannot use member function and std::bind due to performance reasons :/
                                     [this, &center, &cluster_op](const typename traits::visitor_index_t& offset)
                                     {
-                                        auto index = do_add(helper::exists{}, cluster_op, center, offset);
+                                        auto index = do_add(utility::check_feature_exists{}, cluster_op, center, offset);
                                         auto neighbour = storage_.get(index);
                                         if (!neighbour)
                                             return;
@@ -57,14 +58,14 @@ private:
     }
 
     template<typename cluster_op_t, typename offset_t>
-    auto do_add(helper::exists, const cluster_op_t& cluster_op, const index_t& index, const offset_t& offset)
+    auto do_add(utility::feature_exists_tag, const cluster_op_t& cluster_op, const index_t& index, const offset_t& offset)
             -> decltype(cluster_op.add(index, offset))
     {
         return cluster_op.add(index, offset);
     }
 
     template<typename cluster_op_t, typename offset_t>
-    auto do_add(helper::fallback, const cluster_op_t&, const index_t& index, const offset_t& offset)
+    auto do_add(utility::feature_missing_tag, const cluster_op_t&, const index_t& index, const offset_t& offset)
         -> decltype(index_if::add(index, offset))
     {
         return index_if::add(index, offset);
