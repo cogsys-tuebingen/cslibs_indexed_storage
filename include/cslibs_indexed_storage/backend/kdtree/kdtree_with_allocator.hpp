@@ -144,6 +144,10 @@ public:
                 current = current->left;
             else
                 current = current->right;
+
+            if(current == nullptr) {
+                return nullptr;
+            }
         }
         if (current->index != index)
             return nullptr;
