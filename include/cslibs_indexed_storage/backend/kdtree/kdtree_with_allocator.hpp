@@ -55,7 +55,7 @@ protected:
 
             if (branch_left(this->index))
             {
-                std::swap(left->data, this->data);
+                std::swap(left->data_ptr, this->data_ptr);
                 left->index = this->index;
 
                 right->index = index;
@@ -63,7 +63,7 @@ protected:
             }
             else
             {
-                std::swap(right->data, this->data);
+                std::swap(right->data_ptr, this->data_ptr);
                 right->index = this->index;
 
                 left->index = index;
@@ -87,6 +87,7 @@ protected:
 
         index_t index;
         data_storage_t data;
+        data_storage_t* data_ptr = &data;
     };
 
     using node_allocator_t = node_allocator_t_<Node>;
@@ -104,9 +105,9 @@ public:
         {
             root_ = allocator.allocate();
             root_->index = index;
-            root_->data = data_if::create(std::forward<Args>(args)...);
+            *(root_->data_ptr) = data_if::create(std::forward<Args>(args)...);
             ++size_;
-            return data_if::expose(root_->data);
+            return data_if::expose(*root_->data_ptr);
         }
         else
         {
@@ -122,13 +123,13 @@ public:
             if (current->index != index)
             {
                 current = current->split(allocator.allocate(), allocator.allocate(), index);
-                current->data = data_if::create(std::forward<Args>(args)...);
+                *(current->data_ptr) = data_if::create(std::forward<Args>(args)...);
                 ++size_;
             }
             else
-                data_if::template merge<on_duplicate_index_strategy>(current->data, std::forward<Args>(args)...);
+                data_if::template merge<on_duplicate_index_strategy>(*current->data_ptr, std::forward<Args>(args)...);
 
-            return data_if::expose(current->data);
+            return data_if::expose(*current->data_ptr);
         }
     }
 
@@ -152,7 +153,7 @@ public:
         if (current->index != index)
             return nullptr;
 
-        return &data_if::expose(current->data);
+        return &data_if::expose(*current->data_ptr);
     }
 
     inline const data_output_t* get(const index_t& index) const
@@ -171,7 +172,7 @@ public:
         if (current->index != index)
             return nullptr;
 
-        return &data_if::expose(current->data);
+        return &data_if::expose(*current->data_ptr);
     }
 
     template<typename Fn>
@@ -209,7 +210,7 @@ private:
     inline void traverse(const Fn& function, Node* node)
     {
         if (node->is_leaf())
-            function(node->index, data_if::expose(node->data));
+            function(node->index, data_if::expose(*node->data_ptr));
         else
         {
             traverse(function, node->left);
@@ -221,7 +222,7 @@ private:
     inline void traverse(const Fn& function, const Node* node) const
     {
         if (node->is_leaf())
-            function(node->index, data_if::expose(node->data));
+            function(node->index, data_if::expose(*node->data_ptr));
         else
         {
             traverse(function, node->left);
