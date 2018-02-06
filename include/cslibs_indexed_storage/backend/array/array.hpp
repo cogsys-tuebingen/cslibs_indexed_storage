@@ -152,6 +152,17 @@ public:
         return valid_.count(); //!\todo is this a O(1) operation?
     }
 
+    inline std::size_t byte_size() const
+    {
+        std::size_t content_bytes = 0;
+        for (std::size_t size = capacity(), i = 0; i < size; ++i)
+            content_bytes += data_if::byte_size(storage_[i]);
+
+        return sizeof(*this) // static self
+               + valid_.num_blocks() * sizeof(typename decltype(valid_)::block_type) // dynamic "valid_" size
+               + content_bytes;
+    }
+
     inline std::size_t capacity() const
     {
         return get_internal_size();

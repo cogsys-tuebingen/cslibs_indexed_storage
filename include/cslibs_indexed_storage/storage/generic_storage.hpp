@@ -76,6 +76,11 @@ public:
         return backend_.size();
     }
 
+    inline std::size_t byte_size() const
+    {
+        return backend_.byte_size();
+    }
+
     inline std::size_t capacity() const
     {
         return get_capacity(utility::check_feature_exists{}, backend_);

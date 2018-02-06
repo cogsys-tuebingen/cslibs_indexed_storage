@@ -20,6 +20,7 @@ create_test(test_backend_integration
 create_test(test_support_stl_array interface/test_index_std_array.cpp)
 create_test(test_support_stl_tuple interface/test_index_std_tuple.cpp)
 create_test(test_operations_clustering_grid_neighboorhood operations/clustering/test_grid_neighborhood.cpp)
+create_test(test_operations_byte_size operations/byte_size/*.cpp)
 create_test(test_storage
             storage/array/*.cpp
             storage/kdtree/*.cpp)

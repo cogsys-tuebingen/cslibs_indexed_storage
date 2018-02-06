@@ -89,6 +89,12 @@ public:
         return backend_.size();
     }
 
+    inline std::size_t byte_size() const
+    {
+        // sizeof(indexer_) is wrong if indexer is not POD
+        return backend_.byte_size() + sizeof(indexer_);
+    }
+
     inline std::size_t capacity() const
     {
         return get_capacity(utility::check_feature_exists{}, backend_);

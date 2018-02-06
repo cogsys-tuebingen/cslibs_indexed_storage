@@ -80,6 +80,13 @@ protected:
             data = data_storage_t();
         }
 
+        inline std::size_t byte_size() const
+        {
+            return sizeof(*this)
+                   - sizeof(data_storage_t)
+                   + data_if::byte_size(data);
+        }
+
         Node* left = nullptr;
         Node* right = nullptr;
         split_value_t split_value = {};
@@ -205,7 +212,25 @@ public:
         return size_;
     }
 
+    inline std::size_t byte_size() const
+    {
+        return sizeof(*this) + ((root_ == nullptr) ? 0 : byte_size(0, root_));
+    }
+
 private:
+    inline std::size_t byte_size(std::size_t bytes, const Node* node) const
+    {
+        if (node->is_leaf())
+            return bytes + node->byte_size();
+        else
+        {
+            bytes += node->byte_size();
+            bytes += byte_size(0, node->left);
+            bytes += byte_size(0, node->right);
+            return bytes;
+        }
+    }
+
     template<typename Fn>
     inline void traverse(const Fn& function, Node* node)
     {

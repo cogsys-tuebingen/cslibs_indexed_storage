@@ -2,6 +2,7 @@
 
 #include <cslibs_indexed_storage/interface/data/data_storage_hints.hpp>
 #include <cslibs_indexed_storage/interface/data/data_merge.hpp>
+#include <cslibs_indexed_storage/interface/data/detail/data_interface_byte_size.hpp>
 #include <utility>
 
 namespace cslibs_indexed_storage
@@ -64,6 +65,11 @@ struct sparse_data_interface
     static inline constexpr const output_type& expose(const storage_type& storage)
     {
         return *storage;
+    }
+
+    static inline constexpr std::size_t byte_size(const storage_type& storage)
+    {
+        return sizeof(storage_type) + (storage != nullptr) ? detail::byte_size(expose(storage)) : 0;
     }
 };
 }

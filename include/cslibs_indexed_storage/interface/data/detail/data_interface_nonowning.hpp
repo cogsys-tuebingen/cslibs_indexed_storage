@@ -69,6 +69,11 @@ struct nonowning_data_interface
     {
         return *storage;
     }
+
+    static inline constexpr std::size_t byte_size(const storage_type& storage)
+    {
+        return sizeof(storage_type); // we do not own the data -> not accumulated in byte size
+    }
 };
 }
 }
