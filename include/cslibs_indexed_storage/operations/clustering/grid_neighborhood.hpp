@@ -40,7 +40,7 @@ constexpr offset_t generate_offset(std::size_t base, std::size_t counter, utilit
 {
     using value_type = typename offset_t::value_type;
     return {value_type(get_bit<value_type>(base, breaks, counter) - base / 2)...};
-};
+}
 
 template<typename offset_t>
 constexpr offset_t generate_offset(std::size_t base, std::size_t counter)
@@ -52,7 +52,7 @@ template<typename list_t, std::size_t... counter>
 constexpr list_t generate_all(std::size_t base, utility::index_sequence<counter...>)
 {
     return {generate_offset<typename list_t::value_type>(base, counter)...};
-};
+}
 
 template<typename list_t, std::size_t skip>
 constexpr list_t generate(std::size_t base, bool skip_self)

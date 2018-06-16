@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <type_traits>
 #include <algorithm>
+#include <numeric>
 
 namespace cslibs_indexed_storage { namespace backend { namespace simple
 {
