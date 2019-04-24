@@ -75,6 +75,11 @@ public:
         storage_.clear();
     }
 
+    inline std::size_t byte_size() const
+    {
+        return sizeof(*this) + storage_.size() * sizeof(typename map_t::node_type);
+    }
+
     inline std::size_t size() const
     {
         return storage_.size();
