@@ -7,7 +7,7 @@ Also included are configurable operations like:
 ## Usage & Structure
 See [examples](example/) and [tests](test/) directories for some examples.
 
-The only public access API is provided by the `Storage` type, which can be configured to allow abritrary data/index and storage implementations.
+The only public access API is provided by the `Storage` type, which can be configured to allow arbitrary data/index and storage implementations.
 
 `Storage<Data, Index, Backend [, Options]>`
 
