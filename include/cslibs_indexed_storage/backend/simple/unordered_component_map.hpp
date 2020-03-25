@@ -75,6 +75,16 @@ public:
         lookup_.clear();
     }
 
+    inline std::size_t byte_size() const
+    {
+        return sizeof(*this) +
+                std::accumulate(lookup_.begin(), lookup_.end(), std::size_t(0),
+                                [](std::size_t before, const typename lookup_map_t::value_type& entry)
+                                {
+                                    return before + entry.second.byte_size();
+                                });
+    }
+
     inline std::size_t size() const
     {
         return std::accumulate(lookup_.begin(), lookup_.end(), std::size_t(0),
@@ -167,6 +177,16 @@ public:
         storage_.clear();
     }
 
+    inline std::size_t byte_size() const
+    {
+        return sizeof(*this) +
+                std::accumulate(storage_.begin(), storage_.end(), std::size_t(0),
+                                [](std::size_t before, const typename lookup_map_t::value_type& entry)
+                                {
+                                    return before + entry.second.byte_size();
+                                });
+    }
+
     inline std::size_t size() const
     {
         return storage_.size();
@@ -229,6 +249,11 @@ public:
     inline void clear()
     {
         storage_.clear();
+    }
+
+    inline std::size_t byte_size() const
+    {
+        return sizeof(*this) + storage_.byte_size();
     }
 
     inline std::size_t size() const
