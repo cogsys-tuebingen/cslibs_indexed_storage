@@ -84,7 +84,7 @@ protected:
         inline std::size_t byte_size() const
         {
             return sizeof(*this)
-                   - sizeof(data_storage_t)
+                   //- sizeof(data_storage_t)
                    + data_ptr ? data_if::byte_size(data_if::expose(*data_ptr)) : 0ul;
                    //+ data_if::byte_size(data);
         }
