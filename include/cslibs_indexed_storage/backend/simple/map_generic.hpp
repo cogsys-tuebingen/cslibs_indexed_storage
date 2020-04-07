@@ -77,7 +77,11 @@ public:
 
     inline std::size_t byte_size() const
     {
-        return sizeof(*this) + storage_.size() * sizeof(typename map_t::node_type);
+        std::size_t content_bytes = 0;
+        for (auto& entry : storage_)
+            content_bytes += data_if::byte_size(entry.second);
+
+        return sizeof(*this) + content_bytes;
     }
 
     inline std::size_t size() const
