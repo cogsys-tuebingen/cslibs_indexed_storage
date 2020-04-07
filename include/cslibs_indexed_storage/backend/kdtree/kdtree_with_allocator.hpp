@@ -77,14 +77,16 @@ protected:
             // split_value, split_dimension are irrelevant
             index = index_t();
             //!\todo data should only be cleared when really desired by user, to avoid unneccessary operations
-            data = data_storage_t();
+            //data = data_storage_t();
+            //data_ptr = nullptr;
         }
 
         inline std::size_t byte_size() const
         {
             return sizeof(*this)
                    - sizeof(data_storage_t)
-                   + data_if::byte_size(data);
+                   + data_ptr ? data_if::byte_size(data_if::expose(*data_ptr)) : 0ul;
+                   //+ data_if::byte_size(data);
         }
 
         Node* left = nullptr;
@@ -93,11 +95,12 @@ protected:
         std::size_t split_dimension = {};
 
         index_t index;
-        data_storage_t data;
-        data_storage_t* data_ptr = &data;
+        //data_storage_t data;
+        data_storage_t* data_ptr = nullptr;//&data;
     };
 
     using node_allocator_t = node_allocator_t_<Node>;
+    using storage_allocator_t = node_allocator_t_<data_storage_t>;
 
 public:
     ~GenericKDTree()
@@ -112,6 +115,7 @@ public:
         {
             root_ = allocator.allocate();
             root_->index = index;
+            root_->data_ptr = storage_allocator.allocate();
             *(root_->data_ptr) = data_if::create(std::forward<Args>(args)...);
             ++size_;
             return data_if::expose(*root_->data_ptr);
@@ -130,6 +134,7 @@ public:
             if (current->index != index)
             {
                 current = current->split(allocator.allocate(), allocator.allocate(), index);
+                current->data_ptr = storage_allocator.allocate();
                 *(current->data_ptr) = data_if::create(std::forward<Args>(args)...);
                 ++size_;
             }
@@ -204,6 +209,7 @@ public:
             allocator.deallocate(root_);
         }
         allocator.reset();
+        storage_allocator.reset();
         size_ = 0;
     }
 
@@ -265,6 +271,7 @@ private:
             allocator.deallocate(node->right);
         }
         node->clear();
+        storage_allocator.deallocate(node->data_ptr);
     }
 
 protected:
@@ -278,6 +285,7 @@ protected:
 
 private:
     node_allocator_t allocator;
+    storage_allocator_t storage_allocator;
     Node* root_ = nullptr;
     std::size_t size_ = 0;
 };
