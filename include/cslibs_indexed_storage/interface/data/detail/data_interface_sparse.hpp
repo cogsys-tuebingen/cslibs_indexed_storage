@@ -69,7 +69,7 @@ struct sparse_data_interface
 
     static inline constexpr std::size_t byte_size(const storage_type& storage)
     {
-        return sizeof(storage_type) + (storage != nullptr) ? detail::byte_size(expose(storage)) : 0;
+        return storage ? (sizeof(storage_type) + detail::byte_size(expose(storage))) : sizeof(storage_type);
     }
 };
 }
