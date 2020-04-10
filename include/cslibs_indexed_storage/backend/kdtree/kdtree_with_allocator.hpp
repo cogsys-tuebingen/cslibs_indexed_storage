@@ -77,16 +77,13 @@ protected:
             // split_value, split_dimension are irrelevant
             index = index_t();
             //!\todo data should only be cleared when really desired by user, to avoid unneccessary operations
-            //data = data_storage_t();
-            //data_ptr = nullptr;
+            // data_ptr is deallocated outside
         }
 
         inline std::size_t byte_size() const
         {
             return sizeof(*this)
-                   //- sizeof(data_storage_t)
-                   + data_ptr ? data_if::byte_size(data_if::expose(*data_ptr)) : 0ul;
-                   //+ data_if::byte_size(data);
+                   + data_ptr ? data_if::byte_size(*data_ptr) : 0ul;
         }
 
         Node* left = nullptr;
@@ -95,8 +92,7 @@ protected:
         std::size_t split_dimension = {};
 
         index_t index;
-        //data_storage_t data;
-        data_storage_t* data_ptr = nullptr;//&data;
+        data_storage_t* data_ptr = nullptr;
     };
 
     using node_allocator_t = node_allocator_t_<Node>;
@@ -226,7 +222,7 @@ public:
 private:
     inline std::size_t byte_size(std::size_t bytes, const Node* node) const
     {
-        if (node->is_leaf())
+        /*if (node->is_leaf())
             return bytes + node->byte_size();
         else
         {
@@ -234,7 +230,12 @@ private:
             bytes += byte_size(0, node->left);
             bytes += byte_size(0, node->right);
             return bytes;
+        }*/
+        if (!node->is_leaf()) {
+            bytes += byte_size(0, node->left);
+            bytes += byte_size(0, node->right);
         }
+        return bytes + node->byte_size();
     }
 
     template<typename Fn>

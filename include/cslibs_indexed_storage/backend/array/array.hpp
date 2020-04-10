@@ -155,11 +155,13 @@ public:
     inline std::size_t byte_size() const
     {
         std::size_t content_bytes = 0;
-        for (std::size_t size = capacity(), i = 0; i < size; ++i)
+        using valid_storage = decltype(valid_);
+
+        for (std::size_t i=0; i<capacity(); ++i)
             content_bytes += data_if::byte_size(storage_[i]);
 
         return sizeof(*this) // static self
-               + valid_.num_blocks() * sizeof(typename decltype(valid_)::block_type) // dynamic "valid_" size
+               + valid_.num_blocks() * sizeof(typename valid_storage::block_type) // dynamic "valid_" size
                + content_bytes;
     }
 

@@ -183,7 +183,7 @@ public:
                 std::accumulate(storage_.begin(), storage_.end(), std::size_t(0),
                                 [](std::size_t before, const typename lookup_map_t::value_type& entry)
                                 {
-                                    return before + entry.second.byte_size();
+                                    return before + data_if::byte_size(entry.second);
                                 });
     }
 
