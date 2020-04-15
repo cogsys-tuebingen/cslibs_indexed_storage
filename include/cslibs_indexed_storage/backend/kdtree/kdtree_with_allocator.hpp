@@ -82,8 +82,7 @@ protected:
 
         inline std::size_t byte_size() const
         {
-            return sizeof(*this)
-                   + data_ptr ? data_if::byte_size(*data_ptr) : 0ul;
+            return is_leaf() ? (sizeof(*this) + data_if::byte_size(*data_ptr)) : sizeof(*this);
         }
 
         Node* left = nullptr;
@@ -216,21 +215,12 @@ public:
 
     inline std::size_t byte_size() const
     {
-        return sizeof(*this) + ((root_ == nullptr) ? 0 : byte_size(0, root_));
+        return root_ ? (sizeof(*this) + byte_size(0, root_)) : sizeof(*this);
     }
 
 private:
     inline std::size_t byte_size(std::size_t bytes, const Node* node) const
     {
-        /*if (node->is_leaf())
-            return bytes + node->byte_size();
-        else
-        {
-            bytes += node->byte_size();
-            bytes += byte_size(0, node->left);
-            bytes += byte_size(0, node->right);
-            return bytes;
-        }*/
         if (!node->is_leaf()) {
             bytes += byte_size(0, node->left);
             bytes += byte_size(0, node->right);

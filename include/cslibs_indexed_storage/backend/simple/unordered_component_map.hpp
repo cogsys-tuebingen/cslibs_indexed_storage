@@ -77,12 +77,22 @@ public:
 
     inline std::size_t byte_size() const
     {
+        using key_type = index_element_t;
+        using value_type = UnorderedComponentMapStorage<data_if, index_if, own_index + 1, last_index, on_duplicate_index_strategy>;
+        using pair_type = std::pair<const key_type, value_type>;
+        using node_base_type = std::__detail::_Hash_node_base;
+        using hash_cached = std::__bool_constant<std::__cache_default<key_type, std::hash<key_type>>::value>;
+        using node_type = std::__detail::_Hash_node<pair_type, hash_cached::value>;
+        using bucket_type = node_base_type*;
+
         return sizeof(*this) +
                 std::accumulate(lookup_.begin(), lookup_.end(), std::size_t(0),
                                 [](std::size_t before, const typename lookup_map_t::value_type& entry)
                                 {
                                     return before + entry.second.byte_size();
-                                });
+                                }) +
+        lookup_.size() * (sizeof(node_type) - sizeof(value_type)) +
+        lookup_.bucket_count() * sizeof(bucket_type);
     }
 
     inline std::size_t size() const
@@ -179,12 +189,22 @@ public:
 
     inline std::size_t byte_size() const
     {
+        using key_type = index_element_t;
+        using value_type = data_storage_t;
+        using pair_type = std::pair<const key_type, value_type>;
+        using node_base_type = std::__detail::_Hash_node_base;
+        using hash_cached = std::__bool_constant<std::__cache_default<key_type, std::hash<key_type>>::value>;
+        using node_type = std::__detail::_Hash_node<pair_type, hash_cached::value>;
+        using bucket_type = node_base_type*;
+
         return sizeof(*this) +
                 std::accumulate(storage_.begin(), storage_.end(), std::size_t(0),
                                 [](std::size_t before, const typename lookup_map_t::value_type& entry)
                                 {
                                     return before + data_if::byte_size(entry.second);
-                                });
+                                }) +
+        storage_.size() * (sizeof(node_type) - sizeof(value_type)) +
+        storage_.bucket_count() * sizeof(bucket_type);
     }
 
     inline std::size_t size() const

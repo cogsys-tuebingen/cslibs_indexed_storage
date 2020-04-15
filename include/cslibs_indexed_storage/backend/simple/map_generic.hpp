@@ -75,13 +75,9 @@ public:
         storage_.clear();
     }
 
-    inline std::size_t byte_size() const
+    virtual inline std::size_t byte_size() const
     {
-        std::size_t content_bytes = 0;
-        for (auto& entry : storage_)
-            content_bytes += data_if::byte_size(entry.second);
-
-        return sizeof(*this) + content_bytes;
+        return 0;
     }
 
     inline std::size_t size() const
@@ -89,7 +85,7 @@ public:
         return storage_.size();
     }
 
-private:
+protected:
     map_t storage_;
 };
 
