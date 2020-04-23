@@ -19,7 +19,7 @@ template<typename type>
 struct dense_data_merger<type, option::MergeStrategy::REPLACE>
 {
     template<typename... Args>
-    static constexpr inline void apply(type& self, Args&&... args)
+    static inline void apply(type& self, Args&&... args)
     {
         self.~type();
         new (&self) type(std::forward<Args>(args)...);
@@ -30,7 +30,7 @@ template<typename type>
 struct dense_data_merger<type, option::MergeStrategy::MERGE>
 {
     template<typename... Args>
-    static constexpr inline void apply(type& self, Args&&... args)
+    static inline void apply(type& self, Args&&... args)
     {
         using ::cslibs_indexed_storage::merge;
         merge(self, std::forward<Args>(args)...);
@@ -59,7 +59,7 @@ struct dense_data_interface
     }
 
     template<option::MergeStrategy strategy, typename... Args>
-    static inline constexpr void merge(storage_type& self, Args&&... args)
+    static inline void merge(storage_type& self, Args&&... args)
     {
         return detail::dense_data_merger<storage_type, strategy>::apply(self, std::forward<Args>(args)...);
     }

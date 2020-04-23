@@ -138,11 +138,11 @@ private:
         return std::numeric_limits<std::size_t>::max();
     }
 
-    inline constexpr index_t extract_index(std::false_type, const data_input_t& data)
+    inline index_t extract_index(std::false_type, const data_input_t& data) const
     {
         return indexer_.index(data);
     }
-    inline constexpr index_t extract_index(std::true_type, const data_input_t& data)
+    inline index_t extract_index(std::true_type, const data_input_t& data) const
     {
         return indexer_.index(*data);
     }

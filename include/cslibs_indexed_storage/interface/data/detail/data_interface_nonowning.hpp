@@ -16,7 +16,7 @@ struct nonowning_data_merger;
 template<typename type>
 struct nonowning_data_merger<type, option::MergeStrategy::REPLACE>
 {
-    static constexpr inline void apply(type& self, type other)
+    static inline void apply(type& self, type other)
     {
         self = other;
     }
@@ -25,14 +25,14 @@ struct nonowning_data_merger<type, option::MergeStrategy::REPLACE>
 template<typename type>
 struct nonowning_data_merger<type, option::MergeStrategy::MERGE>
 {
-    static constexpr inline void apply(type& self, type other)
+    static inline void apply(type& self, type other)
     {
         using ::cslibs_indexed_storage::merge;
         merge(*self, *other);
     }
 
     template<typename... Args>
-    static constexpr inline void apply(type& self, Args&&... args)
+    static inline void apply(type& self, Args&&... args)
     {
         using ::cslibs_indexed_storage::merge;
         merge(*self, std::forward<Args>(args)...);
@@ -56,7 +56,7 @@ struct nonowning_data_interface
     }
 
     template<option::MergeStrategy strategy, typename... Args>
-    static inline constexpr void merge(storage_type& self, Args&&... args)
+    static inline void merge(storage_type& self, Args&&... args)
     {
         return detail::nonowning_data_merger<storage_type, strategy>::apply(self, std::forward<Args>(args)...);
     }
