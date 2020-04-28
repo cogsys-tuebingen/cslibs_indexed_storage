@@ -25,8 +25,10 @@ public:
 
     inline void deallocate(Node*& node)
     {
-        (*node).~Node();
-        allocator_.deallocate(node, 1);
+        if(node != nullptr) {
+            (*node).~Node();
+            allocator_.deallocate(node, 1);
+        }
         node = nullptr;
     }
 
