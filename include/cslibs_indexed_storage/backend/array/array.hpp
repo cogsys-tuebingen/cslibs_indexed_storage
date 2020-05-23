@@ -226,7 +226,7 @@ private:
         return index;
     }
 
-    constexpr std::size_t get_internal_size() const
+    std::size_t get_internal_size() const
     {
         std::size_t size = 1;
         for (std::size_t i = 0; i < index_if::dimensions; ++i)

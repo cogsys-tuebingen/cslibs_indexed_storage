@@ -46,13 +46,13 @@ using has_variadic_merge_t = typename std::integral_constant<bool, has_variadic_
 
 
 template<typename T, typename... Args>
-inline constexpr void merge_dispatch(std::true_type, T& self, Args&&... args)
+inline void merge_dispatch(std::true_type, T& self, Args&&... args)
 {
     self.merge(std::forward<Args>(args)...);
 }
 
 template<typename T, typename... Args>
-inline constexpr void merge_dispatch(std::false_type, T& self, Args&&... args)
+inline void merge_dispatch(std::false_type, T& self, Args&&... args)
 {
     self.merge(T{std::forward<Args>(args)...});
 }
@@ -78,7 +78,7 @@ inline constexpr void merge_dispatch(std::false_type, T& self, Args&&... args)
  * @param args merge argument values
  */
 template<typename T, typename... Args>
-inline constexpr auto merge(T& self, Args&&... args) -> typename std::enable_if<detail::has_variadic_merge<T, Args...>::value || detail::has_member_merge<T>::value>::type
+inline auto merge(T& self, Args&&... args) -> typename std::enable_if<detail::has_variadic_merge<T, Args...>::value || detail::has_member_merge<T>::value>::type
 {
     detail::merge_dispatch(detail::has_variadic_merge_t<T, Args...>{}, self, std::forward<Args>(args)...);
 }
