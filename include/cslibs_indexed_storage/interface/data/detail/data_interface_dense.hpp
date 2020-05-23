@@ -77,6 +77,11 @@ struct dense_data_interface
     {
         return detail::byte_size(expose(storage));
     }
+
+    static inline void deallocate(storage_type& storage)
+    {
+        // data will be deallocated by destructor
+    }
 };
 }
 }

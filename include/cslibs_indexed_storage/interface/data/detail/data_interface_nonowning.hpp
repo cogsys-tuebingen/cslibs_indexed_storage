@@ -74,6 +74,11 @@ struct nonowning_data_interface
     {
         return sizeof(storage_type); // we do not own the data -> not accumulated in byte size
     }
+
+    static inline void deallocate(storage_type& storage)
+    {
+        // we do not own the data -> data needs to be deallocated externally
+    }
 };
 }
 }

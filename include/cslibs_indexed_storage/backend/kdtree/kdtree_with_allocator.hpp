@@ -76,6 +76,7 @@ protected:
             // left, right are cleared during deallocation
             // split_value, split_dimension are irrelevant
             index = index_t();
+            data_if::deallocate(*data_ptr);
             //!\todo data should only be cleared when really desired by user, to avoid unneccessary operations
             // data_ptr is deallocated outside
         }
