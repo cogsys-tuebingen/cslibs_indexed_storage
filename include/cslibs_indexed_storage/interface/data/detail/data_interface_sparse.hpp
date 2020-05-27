@@ -71,6 +71,13 @@ struct sparse_data_interface
     {
         return storage ? (sizeof(storage_type) + detail::byte_size(expose(storage))) : sizeof(storage_type);
     }
+
+    static inline void deallocate(storage_type& storage)
+    {
+        if (storage) {
+            delete storage;
+        }
+    }
 };
 }
 }
