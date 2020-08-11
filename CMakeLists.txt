@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(cslibs_indexed_storage)
 
 # load helpers
@@ -12,8 +12,6 @@ include(cmake/HelperMacros.cmake)
 find_package(Boost REQUIRED)
 find_package(Doxygen)
 
-set(CATKIN_ENABLE_TESTING ON)
-set(CATKIN_SKIP_TESTING OFF)
 find_package(catkin QUIET)
 
 if (${catkin_FOUND})
