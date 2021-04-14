@@ -31,15 +31,15 @@ protected:
     struct Node
     {
         inline constexpr bool is_leaf() const { return (left == nullptr) & (right == nullptr); }
-        inline constexpr bool branch_left(const index_t& index) const { return index[split_dimension] < split_value; }
+        inline constexpr bool branch_left(const index_t& _index) const { return _index[split_dimension] < split_value; }
 
-        inline Node* split(Node* left, Node* right, const index_t& index)
+        inline Node* split(Node* _left, Node* _right, const index_t& _index)
         {
             {
                 split_value_t max_delta = 0;
                 for (std::size_t i = 0; i < index_if::dimensions; ++i)
                 {
-                    auto delta = std::abs(index_if::access(i, this->index) - index_if::access(i, index));
+                    auto delta = std::abs(index_if::access(i, this->index) - index_if::access(i, _index));
                     if (delta > max_delta)
                     {
                         max_delta = delta;
@@ -47,27 +47,27 @@ protected:
                     }
                 }
 
-                split_value = (index_if::access(split_dimension, this->index) + index_if::access(split_dimension, index)) / split_value_t(2);
+                split_value = (index_if::access(split_dimension, this->index) + index_if::access(split_dimension, _index)) / split_value_t(2);
             }
 
-            this->left = left;
-            this->right = right;
+            this->left = _left;
+            this->right = _right;
 
             if (branch_left(this->index))
             {
-                std::swap(left->data_ptr, this->data_ptr);
-                left->index = this->index;
+                std::swap(_left->data_ptr, this->data_ptr);
+                _left->index = this->index;
 
-                right->index = index;
-                return right;
+                _right->index = _index;
+                return _right;
             }
             else
             {
-                std::swap(right->data_ptr, this->data_ptr);
-                right->index = this->index;
+                std::swap(_right->data_ptr, this->data_ptr);
+                _right->index = this->index;
 
-                left->index = index;
-                return left;
+                _left->index = _index;
+                return _left;
             }
         }
 
@@ -86,13 +86,13 @@ protected:
             return is_leaf() ? (sizeof(*this) + data_if::byte_size(*data_ptr)) : sizeof(*this);
         }
 
-        Node* left = nullptr;
-        Node* right = nullptr;
-        split_value_t split_value = {};
-        std::size_t split_dimension = {};
+        Node* left{nullptr};
+        Node* right{nullptr};
+        split_value_t split_value{};
+        std::size_t split_dimension{};
 
         index_t index;
-        data_storage_t* data_ptr = nullptr;
+        data_storage_t* data_ptr{nullptr};
     };
 
     using node_allocator_t = node_allocator_t_<Node>;
@@ -267,12 +267,12 @@ private:
     }
 
 protected:
-    void set_node_allocator(node_allocator_t allocator)
+    void set_node_allocator(node_allocator_t _allocator)
     {
         if (root_ != nullptr)
             throw std::runtime_error("Allocator change not allowed with active data");
 
-        std::swap(this->allocator, allocator);
+        std::swap(this->allocator, _allocator);
     }
 
 private:
